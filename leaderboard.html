@@ -1,0 +1,53 @@
+<%inherit file="layout.html"/>
+<%namespace name="leaderboardlib" file="leaderboardlib.html"/>
+
+<%!
+	import cherrypy as cp
+	import gnubg.webapp as webapp
+	import gnubg.config as conf
+%>
+
+<%block name="head">
+
+	<style type="text/css">
+
+		#leaderboard_layout > tbody > tr > td {
+			padding-right: 1.5em;
+			vertical-align: top;
+		}
+		#leaderboard {
+			width: 20em;
+		}
+
+	</style>
+
+	<script type="text/javascript">
+
+	</script>
+
+
+</%block>
+
+<%block name="mid_content">
+
+	<table id="leaderboard_layout"><tr>
+	<td>
+	${leaderboardlib.leaderboard(True, False, conf.MAX_USERNAME_LENGTH_FOR_LEADERBOARD_PAGE)}
+	</td>
+	<td>
+		## <p>
+		## <form action="">
+		## 	Find player:
+		## 	<input type="text" name="query">
+		## 	<input type="submit" value="Find">
+		## </form>
+		## <%
+		## %>
+		## <div class="error">
+		## 	## ${error_message|h}
+		## </div>
+	</td>
+	</tr></table>
+
+</%block>
+

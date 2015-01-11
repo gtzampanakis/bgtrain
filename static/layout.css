@@ -1,0 +1,170 @@
+body {
+	font-size: 10pt;
+	font-family: "Nimbus Sans L", "Trebuchet MS", sans-serif;
+	background-color: #C9C9C9;
+}
+#page_wrapper {
+	padding: .5em 1em;
+	position: relative;
+	border: 1px solid gray;
+}
+#columns_wrapper_container {
+	min-height: 300px;
+}
+#left_content {
+	min-width: 180px;
+}
+.column {
+	border: 0px solid black;
+	padding: 0 .3em;
+	vertical-align: top;
+}
+#left_content ul {
+	padding-left: .5em;
+}
+#banner {
+	height: 90px;
+}
+#footer {
+	width: 100%;
+	font-size: smaller;
+}
+#username {
+	font-weight: bolder;
+}
+#authentication_failure {
+	color: red;	
+}
+.positive_diff {
+	color: green;
+}
+.negative_diff {
+	color: red;
+}
+.error {
+	color: red;
+}
+.success {
+	color: green;
+}
+#footer > span + span {
+	border-left: 1px solid gray;
+	margin-left: 0;
+}
+#footer > span {
+	padding-right: .5em;
+	padding-left: .5em;
+}
+#banner_bar {
+	width: 100%;
+}
+#banner_bar > * > tr > td:nth-child(1) span * {
+	margin-left: .5em;
+}
+#banner_bar > * > tr > td:nth-child(1) {
+	width: 320px;
+}
+#login {
+	width: 10%;
+}
+#login input[type=text], #login input[type=password] {
+	width: 8em;
+}
+#footer .fb-like span {
+	border: 0;
+}
+#footer * {
+	vertical-align: text-bottom;
+	font-style: italic;
+}
+.stat {
+	font-weight: bolder;
+}
+input[type=submit], input[type=button] {
+	border: 1px solid gray;
+}
+#user_information td:nth-child(2) {
+	text-align: right;
+	padding-left: .8em;
+	white-space: nowrap;
+}
+.banner_bar_links * {
+	vertical-align: text-bottom;
+}
+
+.number_list,
+.number_list td, 
+.number_list th {
+	border: 2px solid gray;
+	border-collapse: collapse;
+	padding: 0.0em .5em;
+}
+.number_list th {
+	background-color: #B0B0B1;
+}
+#leaderboard td:nth-child(1),
+#leaderboard td:nth-child(3),
+#leaderboard td:nth-child(4) {
+	text-align: right;
+}
+#leaderboard td {
+	font-size: smaller;
+}
+.alternate_row_colors tr:nth-child(2n) {
+	background-color: #D4D4FF;
+}
+#leaderboard tr.users_leader_row,
+.selected_move {
+	font-weight: bold;
+	background-color: #5AAFCC;
+}
+
+.current_page {
+	font-weight: bold;
+	font-size: larger;
+}
+.page_control a {
+	margin: .1em;
+}
+.page_control a {
+	color: blue;
+}
+.page_control {
+	text-align: center;
+}
+hr {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#board_image_wrapper, .board_image_wrapper {
+	padding: 0;
+	position: relative;
+}
+
+img.number {
+	z-index: 50;
+}
+
+.author_name {
+	font-weight: bolder;
+}
+
+div.ad_button {
+	max-width: 120px;
+	margin: 0 auto;
+	margin-bottom: 5px;
+}
+
+table#navigation td {
+	vertical-align: top;
+}
+
+table.checker_color_setup,
+table.checker_color_setup td,
+table.checker_color_setup th
+{
+	border: 1px solid gray;
+	border-collapse: collapse;
+	padding: 5px;
+}

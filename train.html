@@ -1,0 +1,121 @@
+<%inherit file="layout.html"/>
+<%namespace name="leaderboardlib" file="leaderboardlib.html"/>
+
+<%!
+	import gnubg.webapp as webapp
+	import gnubg.config as conf
+%>
+
+<%block name="head">
+
+	<script type="text/javascript" src="/static/diagram.js?v=13"></script>
+
+	<link rel="stylesheet" href="/static/train.css">
+
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+				onTrainHtmlLoad();
+		});
+
+	</script>
+</%block> ## End of head
+
+<%block name="left_content">
+	${leaderboardlib.leaderboard(False, True, conf.MAX_USERNAME_LENGTH_FOR_HOME_PAGE, show_diff = True)}
+</%block>
+<%block name="bottom_left_content">
+<p><div class="fb-like" data-href="http://www.bgtrain.com/" 
+	data-width="100" data-layout="button_count" data-action="like" 
+	data-show-faces="false" data-share="true"></div>
+## <p>
+## <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.bgtrain.com/">Tweet</a>
+## <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</%block>
+
+<%block name="mid_content">
+		<% 
+			moves_html = context.get('moves_html', '')
+			comments_html = context.get('comments_html', '')
+		%>
+		<table id="page_columns"><tr><td>
+			<div id="board_column">
+				<div id="match_score">
+					<table>
+						<tr>
+						</tr>
+						<tr>
+						</tr>
+					</table>
+				</div>
+				<p>
+				<div id="board_image_wrapper">
+					## It is important that this DIV only contains the images, and
+					## its width and height are set to exactly the width and
+					## height of the board image. Otherwise positioning of the
+					## checkers/dice/etc. can get messed up.
+					<img alt="Backgammon board" 
+						id="board" 
+						width="432"
+						height="328"
+						src="/static/cacheable/empty_board.jpg"
+					>
+				</div>
+				% if moves_html != '':
+				<p>
+					<em>You have already played this position. You can't play it again.</em>
+				</p>
+				% endif
+				<p>
+				<input type="button" class="undo" value="Undo">
+				<input type="button" id="invert_dice" value="Invert Dice">
+				% if moves_html == '':
+					<input type="button" id="submit" value="Submit">
+				% endif
+				<input type="button" id="next_position" 
+
+				% if moves_html == '':
+					style="display:none;"
+				% endif
+
+				value="Next Position">
+
+				<p id="decision_description"></p>
+				<label id="auto_submit_label">
+					<input type="checkbox" id="auto_submit" value="true">Auto submit
+				</label>
+
+				<div id="comments">
+				% if comments_html != '':
+					${comments_html}
+				% endif
+				</div>
+
+				<hr>
+				<p id="gnu_id">Position ID: 
+				<span>${position_id|h}</span> &nbsp; <a href="/?pid=${position_id|u,h}">Link to position</a>
+				&nbsp;
+				<a href="#report_position_div" onclick="showReportPosition();">Report position</a>
+
+				<div id="report_position_div" class="report_position" style="display: none;">
+					<h4 class="report_position">Report this position:</h4>
+					<textarea class="report_position" name="report"></textarea>
+					<p>
+					<input id="post_report_button" onclick="reportPosition(); return false;" type="button" value="Send">
+					</p>
+				</div>
+
+			</div>
+			</td>
+
+			<td id="moves_column_td">
+
+				<div id="moves_column"> 
+					${moves_html}
+				</div>
+
+			</td>
+
+		</tr></table>
+</%block>
+

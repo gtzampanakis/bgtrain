@@ -1,0 +1,98 @@
+<%inherit file="layout.html"/>
+<%namespace name="leaderboardlib" file="leaderboardlib.html"/>
+<%namespace name="lib" file="lib.html"/>
+
+<%!
+	import cherrypy as cp
+	import gnubg.webapp as webapp
+	import gnubg.config as conf
+	import gnubg.webutil as webutil
+%>
+
+<%block name="head">
+
+	<style type="text/css">
+
+		#latest_comments_table td {
+			font-size: smaller;
+		}
+		.total_comments_column {
+			text-align: right;
+		}
+		.comment_summary_show {
+			font-style: italic;
+		}
+		.comment_summary_noshow {
+			color: #646464;
+		}
+
+	</style>
+
+	<script type="text/javascript">
+
+	</script>
+
+
+</%block>
+
+<%block name="mid_content">
+
+	<table id="latest_comments_table" class="number_list alternate_row_colors">
+		<tr>
+			<th colspan="5">Latest Comments</th>
+		</tr>
+		<tr>
+			<th>Position</th>
+			<th>Comment</th>
+			<th>Latest Author</th>
+			<th>Date</th>
+			<th>Total</th>
+		</tr>
+		% for gnuid, latestby, latestat, total_position_comments, comment_summary, show in rs:
+		<tr>
+			<td>
+				<a href="/?pid=${gnuid|u,h}#comments_header">Position</a>
+			</td>
+			<td
+				class="comment_summary_${show}"
+			>
+				${
+				(
+					webutil.truncate_string(
+						comment_summary, 
+						conf.COMMENTS_LIST_SUMMARY_LENGTH
+					)
+					if show == 'show'
+					else 'Please submit a move to reveal the comments.'
+				)
+				|h}
+			</td>
+			<td>
+				${
+					webutil.truncate_string(
+						latestby, 
+						conf.MAX_USERNAME_LENGTH_FOR_HOME_PAGE
+					)
+				|h}
+			</td>
+			<td>
+				${latestat|h}
+			</td>
+			<td class="total_comments_column">
+				${total_position_comments|h}
+			</td>
+		</tr>
+		% endfor
+	</table>
+
+	${
+		lib.page_control(
+			page,
+			3,
+			total_comments,
+			conf.COMMENTS_LIST_ROWS,
+		)
+	}
+
+</%block>
+

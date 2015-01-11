@@ -1,0 +1,94 @@
+<%!
+	import gnubg.webapp as webapp
+	import gnubg.generate as gnubggen
+	import gnubg.config as conf
+	import gnubg.common
+%>
+
+<%
+	def is_checker_decision():
+		return decision_type == gnubggen.CHEQUER_DECISION
+
+	def to_fixed_3(f):
+		if f is None or f == '':
+			return ''
+		return '%.3f' % f
+
+	colspan_value = '5' if is_checker_decision() else '4'
+%>
+
+<table id="moves_table" class="number_list">
+	<tr>
+		<th colspan="${colspan_value|u,h}">Analysis</th>
+
+		<tr>
+			<th>Move</th>
+			<th>Ply</th>
+			<th>Equity</th>
+			<th>Diff</th>
+		% if is_checker_decision():
+			<th>Show</th>
+		% endif
+		</tr>
+
+		<%
+		ellipsis_drawn = False
+		highlighted_drawn = False
+		%>
+
+		% for movei, move in enumerate(moves, 1):
+			<% should_highlight = move.get('highlight') %>
+			% if movei < 25 or should_highlight:
+				<tr
+					% if should_highlight:
+						class="selected_move"
+					% endif
+					% if move.get('disabled'):
+						class="disabled"
+					% endif
+				>
+					<td class="move_notation">${move.get('move')|h}</td>
+					<td class="ply">${move.get('ply')|h}</td>
+					<td class="equity">${to_fixed_3(move.get('equity'))|h}</td>
+					<td class="diff">
+						${to_fixed_3(move.get('diff_show', ''))|h}
+					</td>
+					% if is_checker_decision():
+					<td 
+						class="show_move"
+					>
+						<label>
+							<input type="radio" name="show_move"
+							% if should_highlight:
+								checked
+							% else:
+								class="not_checked"
+							% endif
+							onclick="showMoveClickHandler(this);"
+							>
+						</label>
+					</td>
+					% endif
+					% if should_highlight:
+						<% highlighted_drawn = True %>
+					% endif
+			% else:
+				% if not ellipsis_drawn and not highlighted_drawn:
+				<tr>
+					<td 
+						id="ellipsis"
+						colspan="${colspan_value|u,h}"
+					>
+						&hellip;
+					</td>
+				</tr>
+				<% ellipsis_drawn = True %>
+				% endif
+			% endif
+		% endfor
+</table>
+
+% if is_checker_decision():
+<p>
+<input type="button" class="undo restore_position" value="Restore position">
+% endif

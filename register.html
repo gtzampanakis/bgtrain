@@ -1,0 +1,41 @@
+<%inherit file="layout.html"/>
+
+<%!
+	import cherrypy as cp
+%>
+
+<%block name="head">
+
+	<style type="text/css">
+		#error_message {
+			color: red;
+		}
+	</style>
+
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+
+		});
+
+	</script>
+
+
+</%block>
+
+<%block name="login"/>
+
+<%block name="mid_content">
+	<form action="" method="post">
+		<table>
+			<tr><td>Username: </td><td><input type="text" name="username" value=""></td></tr>
+			<tr><td>Password: </td><td><input type="password" name="password" value=""></td></tr>
+			<tr><td>Password again: </td><td><input type="password" name="password_again" value=""></td></tr>
+		</table>
+			<p><input type="submit" value="Submit">
+			<p id="error_message">
+				${error_message|h}
+			</p>
+	</form>
+</%block>
+

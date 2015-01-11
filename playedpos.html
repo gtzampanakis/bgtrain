@@ -1,0 +1,110 @@
+<%inherit file="layout.html"/>
+<%namespace name="lib" file="lib.html"/>
+
+<%!
+	import cherrypy as cp
+	import gnubg.config as conf
+	## import gnubg.webapp as webapp
+%>
+
+<%block name="head">
+
+	<script type="text/javascript" src="/static/diagram.js?v=9"></script>
+
+	<style type="text/css">
+
+		#pos_list_table td {
+			padding: 8px 10px;
+		}
+		#p_before_pos_list_table {
+			margin: 5px;
+		}
+		#pos_list_table td p {
+			margin: 4px;
+		}
+		td.info span.heading {
+			color: Indigo;
+		}
+
+	</style>
+
+	<script type="text/javascript">
+
+			var dimensionMplier = .75;
+			var CHECK_SIDE_LENGTH = 24 * dimensionMplier;
+			var DIE_SIDE_LENGTH = 28 * dimensionMplier;
+			var DICE_MARGIN = 10 * dimensionMplier;
+			var OVERFLOW_INDICATOR_SIZE = 18 * dimensionMplier;
+
+			setDimensions();
+
+			$(document).ready(function() {
+
+					/* Setting submitCalled to true is a nice way to disable setting of
+						 click handlers for the board/checkers/etc. */
+					submitCalled = true;
+
+					$('.board_image_wrapper').each(function(elemi, elem) {
+						boardImageWrapper = $(elem);
+						boardImageWrapper.css('width', BOARD_WIDTH)
+																.css('height', BOARD_HEIGHT);
+						var href = boardImageWrapper.parent().parent().find('td.info a').attr('href');
+						gnuId = decodeURIComponent(/\/?pid=(.+)/.exec(href)[1]);
+						readGnuIdAndDraw(gnuId);
+
+						boardImageWrapper.find('img.board_img').each(function(imgelemi, imgelem) {
+							resizeImg(imgelem, dimensionMplier);
+						});
+
+					});
+
+			});
+
+	</script>
+
+
+</%block>
+
+<%block name="mid_content">
+
+	<% page_control = lambda: lib.page_control(page, 3, count, conf.POSITION_HIST_ROWS) %>
+	${page_control()}
+
+	<p id="p_before_pos_list_table">
+
+	<table id="pos_list_table" class="number_list">
+		<tr><th colspan="2">Position History</th></tr>
+		<tr>
+			<th>Position</th>
+			<th>Info</th>
+		</tr>
+		% for pos_list_row in pos_list_rows:
+		<%
+			posmatchid = pos_list_row[0]
+			submittedat = pos_list_row[1]
+		%>
+			<tr>
+				<td>
+					<div class="board_image_wrapper">
+						<img 
+									alt="Backgammon board" 
+									src="/static/cacheable/empty_board.jpg"
+									width="432"
+									height="328"
+									class="board_img"
+						>
+					</div>
+				</td>
+				<td class="info">
+					<span class="heading">Date:</span> <span class="value">${submittedat|h}</span>
+					<br>
+					<a href="/?pid=${posmatchid|u,h}">Position page</a>
+				</td>
+			</tr>
+		% endfor
+	</table>
+
+	${page_control()}
+
+</%block>
+
