@@ -47,12 +47,13 @@ def html(f):
 		return f(self, *args, **kwargs)
 	return f_
 
-def get_rating_for_username(username):
+def get_rating_for_username(username, for_update = False):
 	sql = """
 		select rating
 		from users
 		where username = %s
-	"""
+		{for_update}
+	""".format(for_update = 'for update' if for_update else '')
 
 	row = cp.thread_data.conn.execute(sql, [username]).fetchone()
 	if row is not None:
@@ -563,7 +564,7 @@ class Application:
 								diff += -eq_diff -conf.PLY_PENALTY
 
 
-					player_rating = get_rating_for_username(get_username_to_use())
+					player_rating = get_rating_for_username(get_username_to_use(), for_update = True)
 
 					sql = """
 						select ratingpos
@@ -571,6 +572,7 @@ class Application:
 						where posmatchid = %s
 						order by submittedat desc
 						limit 1
+						for update
 					"""
 
 					row = conn.execute(sql, [gnuid]).fetchone()
