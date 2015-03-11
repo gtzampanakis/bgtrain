@@ -13,9 +13,9 @@ with gc.get_conn() as conn:
 				sql = '''
 					insert ignore
 					into posmatchids
-					(posmatchid, decisiontype, version)
+					(posmatchid, decisiontype, version, createddate)
 					values
-					(%s, %s, %s)
+					(%s, %s, %s, current_timestamp)
 				'''
 				conn.execute(sql, [posmatchid, decisiontype, version])
 
