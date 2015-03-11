@@ -1,4 +1,4 @@
-import os, logging, logging.handlers, time, uuid, random
+import os, logging, logging.handlers, time, random
 import socket, sys, platform
 
 import platform
@@ -53,7 +53,7 @@ class Daemon:
 					LOGGER.info('Binding to port %s', port_to_use)
 					lock_socket.bind(('localhost', port_to_use))
 				else:
-					lock_id = str(uuid.uuid1().hex)
+					lock_id = str('gtzampanakis')
 					lock_socket.bind('\0' + lock_id)
 				LOGGER.debug('Successfully acquired lock')
 				while True:
@@ -66,6 +66,7 @@ class Daemon:
 						to_wait = 0
 					time.sleep(to_wait)
 			except socket.error:
+				print 'Failed to acquire lock'
 				LOGGER.debug('Failed to acquire lock')
 				return
 
