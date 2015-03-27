@@ -177,3 +177,8 @@ CREATE TABLE `usersposmatchids` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2015-03-11 21:16:35
+
+alter table usersposmatchids add (eqdiff float);
+
+create index usersposmatchids_idx1 on usersposmatchids(eqdiff);
+

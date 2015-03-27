@@ -584,6 +584,7 @@ class Application:
 					if position_rating is None:
 						position_rating = DEFAULT_RATING
 
+					logger.info('equity diff: %.3f', diff)
 					to_increment = elo.match_increment(
 							player_rating,
 							position_rating,
@@ -611,12 +612,12 @@ class Application:
 						insert into
 						usersposmatchids
 						(posmatchid, username, submittedat, move, 
-						ratinguser, ratingpos)
+						ratinguser, ratingpos, eqdiff)
 						values
-						(%s, %s, utc_timestamp(), %s, %s, %s)
+						(%s, %s, utc_timestamp(), %s, %s, %s, %s)
 					"""
 					params = [gnuid, get_username_to_use(), selected_move,
-							player_rating, position_rating]
+							player_rating, position_rating, diff]
 					rs = conn.execute(sql,  params)
 
 					sql = """
