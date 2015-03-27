@@ -1038,24 +1038,37 @@ class Application:
 		result = { }
 
 		just_diffs = '''
-		select eqdiff
+		select eqdiff, ratinguser
 		from usersposmatchids
 		where eqdiff is not null
 		limit 100000
 		'''
 
-		diffs = cp.thread_data.conn.execute(just_diffs).fetchall()
-		diffs = [r[0] for r in diffs]
+		rows = cp.thread_data.conn.execute(just_diffs).fetchall()
+		ratings = [r[1] for r in rows]
+		diffs = [r[0] for r in rows]
 
-		n = len(diffs)
-		mean = sp.mean(diffs)
-		std = sp.std(diffs)
-		quartiles = sp.percentile(diffs, [25, 50, 75])
+		rating_quintiles = sp.percentile(ratings, [20, 40, 60, 80])
 
-		result['eqdiff_n'] = n
-		result['eqdiff_mean'] = mean
-		result['eqdiff_std'] = std
-		result['eqdiff_quartiles'] = quartiles
+		result['rating_quintile_to_figs'] = { }
+
+		last_quint = -1000
+		for quint in rating_quintiles + [100000]:
+			diffs = [r[0] for r in rows if last_quint < r[1] < quint]
+			if len(diffs) > 0:
+				n = len(diffs)
+				mean = sp.mean(diffs)
+				std = sp.std(diffs)
+				quartiles = sp.percentile(diffs, [25, 50, 75])
+				last_quint = quint
+
+				figs = { }
+				result['rating_quintile_to_figs'][quint] = figs
+				figs['n'] = n
+				figs['mean'] = mean
+				figs['std'] = std
+				figs['quartiles'] = quartiles
+
 
 		return result
 
