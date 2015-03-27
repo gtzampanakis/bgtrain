@@ -1028,6 +1028,37 @@ class Application:
 
 		return result
 
+	@cp.expose
+	@html
+	@db
+	@authentication
+	@webutil.template('stats.html')
+	def stats(self, *args, **kwargs):
+		import scipy as sp
+		result = { }
+
+		just_diffs = '''
+		select eqdiff
+		from usersposmatchids
+		where eqdiff is not null
+		limit 100000
+		'''
+
+		diffs = cp.thread_data.conn.execute(just_diffs).fetchall()
+		diffs = [r[0] for r in diffs]
+
+		n = len(diffs)
+		mean = sp.mean(diffs)
+		std = sp.std(diffs)
+		quartiles = sp.percentile(diffs, [25, 50, 75])
+
+		result['eqdiff_n'] = n
+		result['eqdiff_mean'] = mean
+		result['eqdiff_std'] = std
+		result['eqdiff_quartiles'] = quartiles
+
+		return result
+
 def store_comment(body, gnuid):
 	sql = '''
 		insert into

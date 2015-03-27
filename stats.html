@@ -1,0 +1,26 @@
+<%inherit file="layout.html"/>
+
+<%!
+	import cherrypy as cp
+%>
+
+<%block name="head">
+
+	<style type="text/css">
+	</style>
+
+	<script type="text/javascript">
+	</script>
+
+
+</%block>
+
+<%block name="mid_content">
+<ul>
+	<li>n: ${eqdiff_n}
+	<li>mean: ${'%.5f' % eqdiff_mean}
+	<li>std: ${'%.5f' % eqdiff_std}
+	<li>quartiles: ${', '.join('%.5f' % el for el in eqdiff_quartiles)}
+</ul>
+</%block>
+
