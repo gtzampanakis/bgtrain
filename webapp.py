@@ -1038,9 +1038,18 @@ class Application:
 		result = { }
 
 		just_diffs = '''
-		select eqdiff, ratinguser
-		from usersposmatchids
-		where eqdiff is not null
+		select 
+		upm.eqdiff, 
+		(
+			select pre.ratinguser
+			from usersposmatchids pre
+			where pre.username = upm.username
+			and pre.submittedat < upm.submittedat
+			order by submittedat desc
+			limit 1
+		)
+		from usersposmatchids upm
+		where upm.eqdiff is not null
 		limit 100000
 		'''
 
