@@ -218,6 +218,17 @@ def db(f):
 				raise
 	return f_
 
+def get_logged_in_user_email():
+	sql = '''
+		select 
+		email
+		from users
+		where username = %s
+	'''
+	users_row = cp.thread_data.conn.execute(sql, 
+						[get_logged_in_username()]).fetchone()
+	return users_row[0]
+
 def get_rating_of_position(gnu_id):
 	sql = """
 		select ratingpos
@@ -796,13 +807,11 @@ class Application:
 		password = kwargs.get('password')
 		password_again = kwargs.get('password_again')
 		email = kwargs.get('email', '')
-		email_again = kwargs.get('email_again', '')
 
 		if username is not None and password is not None and password_again is not None:
 
 			username = username.strip()
 			email = email.strip()
-			email_again = email_again.strip()
 
 			sql = '''
 				select count(*)
@@ -826,9 +835,6 @@ class Application:
 
 			elif password != password_again:
 				error_message = 'Passwords do not match, please try again.'
-
-			elif email != email_again:
-				error_message = 'Emails do not match, please try again.'
 
 			elif email != '' and not gc.validate_email_address(email):
 				error_message = 'Invalid email address, please try again.'
@@ -895,6 +901,39 @@ class Application:
 		cp.session['success_message'] = success_message
 		cp.session['error_message'] = error_message
 		raise cp.HTTPRedirect('/cpanel')
+
+	@cp.expose
+	@html
+	@ensure_logged_in
+	@db
+	@authentication
+	@webutil.template('cpanel.html')
+	def changeemail(self, *args, **kwargs):
+
+		current_password = kwargs.get('current_password', '')
+		email = kwargs.get('new_email', '')
+
+		success_message = ''
+		error_message = ''
+
+		if current_password == '':
+			error_message = 'Please specify the current password.'
+		elif not gc.check_username_password(get_logged_in_username(), current_password):
+			error_message = 'Invalid current password. Please try again.'
+		elif email == '' or not gc.validate_email_address(email):
+			error_message = 'Invalid email address, please try again.'
+		else:
+			sql = '''
+			update users
+			set email = %s
+			where username = %s
+			'''
+			cp.thread_data.conn.execute(sql, [email, get_logged_in_username()])
+			success_message = 'Your email has been successfully set/changed.'
+
+		cp.session['email_success_message'] = success_message
+		cp.session['email_error_message'] = error_message
+		raise cp.HTTPRedirect('/cpanel')
 		
 	@cp.expose
 	@html
@@ -903,9 +942,18 @@ class Application:
 	@authentication
 	@webutil.template('cpanel.html')
 	def cpanel(self, *args, **kwargs):
+		result = { }
+		sql = '''
+			select 
+			email
+			from users
+			where username = %s
+		'''
+		users_row = cp.thread_data.conn.execute(sql, [get_logged_in_username()]).fetchone()
+		result['current_email'] = users_row[0]
 		success_message = cp.session.get('success_message', '')
 		error_message = cp.session.get('error_message', '')
-		return { }
+		return result
 
 	@cp.expose
 	@html

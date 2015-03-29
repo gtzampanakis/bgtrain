@@ -168,3 +168,27 @@ table.checker_color_setup th
 	border-collapse: collapse;
 	padding: 5px;
 }
+
+td.change_details_description {
+	width: 145px;
+}
+
+form.change_details {
+	width: 280px;
+}
+
+form.change_details td:nth-child(2) {
+	text-align: right;
+}
+
+form.change_details td.current_email_value {
+	text-align: left;
+}
+
+span.forgot_pass_suggestion {
+	font-size: smaller;
+}
+
+.existing_user_email_suggest {
+	font-weight: bold;
+}

@@ -25,11 +25,11 @@
 <%block name="mid_content">
 <h2>Control panel for <em>${webapp.get_logged_in_username()|h}</em></h2>
 <hr>
-<form method="post" action="/changepass">
+<form class="change_details" method="post" action="/changepass">
 	<h3>Change password</h3>
-	<table>
+	<table class="change_details_table">
 		<tr>
-			<td>Current password: </td>
+			<td class="change_details_description">Current password: </td>
 			<td><input type="password" name="current_password"
 				% if cp.session.get('success_message', '') == '':
 					value=""
@@ -65,6 +65,47 @@
 	<% 
 		cp.session['error_message'] = ''
 		cp.session['success_message'] = ''
+	%>
+</form>
+
+<form class="change_details" method="post" action="/changeemail">
+	<h3>Change email</h3>
+	<p>Providing an email address will enable you to reset your password if you
+		forget it.
+	</p>
+	<table class="change_details_table">
+		<tr>
+			<td class="change_details_description">Current password: </td>
+			<td><input type="password" name="current_password"
+				% if cp.session.get('success_message', '') == '':
+					value=""
+				% endif
+				
+				></td>
+		</tr>
+		<tr>
+			<td>Current email:</td>
+			<td class="current_email_value">${current_email or '(Not set)'|h}</td>
+		</tr>
+		<tr>
+			<td>New email: </td>
+			<td><input type="text" name="new_email"
+				% if cp.session.get('success_message', '') == '':
+					value=""
+				% endif
+				
+				></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="Submit"></td>
+		</tr>
+	</table>
+	<span id="error_message">${cp.session.get('email_error_message', '')|h}</span>
+	<span id="success_message">${cp.session.get('email_success_message', '')|h}</span>
+	<% 
+		cp.session['email_error_message'] = ''
+		cp.session['email_success_message'] = ''
 	%>
 </form>
 </%block>

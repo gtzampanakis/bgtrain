@@ -133,6 +133,9 @@
 											<span id="register_benefits">
 												<a href="/register">Register</a> to track your rating and 
 												receive problems tailored to your skill.
+												<br>
+												<span class="forgot_pass_suggestion">Forgot your password?
+													<a href="mailto:giorgos.tzampanakis@gmail.com">Drop us an email.</a></span>
 											</span>
 											% endif
 										</td>
@@ -182,6 +185,15 @@
 				
 
 				<%block name="numberofpositions">
+				% if cp.session.get('username') is not None and webapp.get_logged_in_user_email() is None:
+				<span class="footer existing_user_email_suggest">
+					Please consider 
+					<a href="/cpanel">setting an email address</a>
+					as it will allow you to reset your password
+					should you forget it.
+				</span>
+				<hr>
+				% endif
 				<span class="footer">
 					All design and code by <span class="author_name">Giorgos Tzampanakis</span>: 
 					<a href="/static/cacheable/CV.Giorgos.Tzampanakis.pdf">CV</a>,
