@@ -1101,7 +1101,8 @@ class Application:
 		limit 100000
 		'''
 
-		rows = cp.thread_data.conn.execute(just_diffs).fetchall()
+# First remove the positions where there is no previous rating.
+		rows = [r for r in cp.thread_data.conn.execute(just_diffs) if r[1] is not None]
 		ratings = [r[1] for r in rows]
 		diffs = [r[0] for r in rows]
 
