@@ -295,27 +295,26 @@ def select_new_gnuid(decision_type, username_to_use):
 	limit 1
 	"""
 
-	for cluster_nocluster in [True, False]:
-		for not_ in ['not', '']:
-			for up_down in ['up', 'down']:
-				sql = sql_tmpl.format(
-						not_ = not_,
-						comp_op = '>=' if up_down == 'up' else '<',
-						rating_sort_dir = 'asc' if up_down == 'up' else 'desc',
-				)
-				params = [
-						decision_type,
-						conf.POSITIONS_VERSION_TO_USE,
-						username_to_use,
-						conf.RATING_DECREMENT_FOR_POS_SELECTION,
-						username_to_use,
-				]
-				params += [
-						conf.NUMBER_OF_CANDIDATES,
-				]
-				row = cp.thread_data.conn.execute(sql, params).fetchone()
-				if row is not None:
-					return row[0]
+	for not_ in ['not', '']:
+		for up_down in ['up', 'down']:
+			sql = sql_tmpl.format(
+					not_ = not_,
+					comp_op = '>=' if up_down == 'up' else '<',
+					rating_sort_dir = 'asc' if up_down == 'up' else 'desc',
+			)
+			params = [
+					decision_type,
+					conf.POSITIONS_VERSION_TO_USE,
+					username_to_use,
+					conf.RATING_DECREMENT_FOR_POS_SELECTION,
+					username_to_use,
+			]
+			params += [
+					conf.NUMBER_OF_CANDIDATES,
+			]
+			row = cp.thread_data.conn.execute(sql, params).fetchone()
+			if row is not None:
+				return row[0]
 		
 
 
