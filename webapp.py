@@ -643,12 +643,12 @@ class Application:
 						insert into
 						usersposmatchids
 						(posmatchid, username, submittedat, move, 
-						ratinguser, ratingpos, eqdiff)
+						ratinguser, ratingpos, eqdiff, increment)
 						values
-						(%s, %s, utc_timestamp(), %s, %s, %s, %s)
+						(%s, %s, utc_timestamp(), %s, %s, %s, %s, %s)
 					"""
 					params = [gnuid, get_username_to_use(), selected_move,
-							player_rating, position_rating, diff]
+							player_rating, position_rating, diff, to_increment]
 					rs = conn.execute(sql,  params)
 
 					sql = """
@@ -1111,14 +1111,7 @@ class Application:
 		just_diffs = '''
 		select 
 		upm.eqdiff, 
-		(
-			select pre.ratinguser
-			from usersposmatchids pre
-			where pre.username = upm.username
-			and pre.submittedat < upm.submittedat
-			order by submittedat desc
-			limit 1
-		)
+		upm.ratinguser - upm.increment
 		from usersposmatchids upm
 		where upm.eqdiff is not null
 		limit 100000

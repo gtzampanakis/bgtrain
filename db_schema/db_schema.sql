@@ -184,4 +184,4 @@ create index usersposmatchids_idx1 on usersposmatchids(eqdiff);
 
 alter table users add column (lastsubmission datetime);
 
-
+alter table usersposmatchids add (increment float);
