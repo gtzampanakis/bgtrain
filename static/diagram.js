@@ -1593,7 +1593,7 @@ function onTrainHtmlLoad() {
 			}
 		}
 
-		var dectypeMo = /\bdectype=(.*)\b/.exec(document.cookie);
+		var dectypeMo = /\bdectype=(.+?)\b/.exec(document.cookie);
 		var dectype = 'either';
 		if (dectypeMo) {
 			dectype = dectypeMo[1];
