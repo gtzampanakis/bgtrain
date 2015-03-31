@@ -1268,6 +1268,11 @@ function getSelectedMove() {
 function setUndoDisabledness() {
 	if (isAnalysisShown() || submitCalled && isCheckerDecision()) {
 		$('.restore_position').removeAttr('disabled');
+		if (!isCheckerDecision()) {
+			// This if is to avoid hiding the "Your move" bit. Right now it is
+			// placed inside decision_description.
+			$('#decision_description').hide();
+		}
 	}
 	else {
 		if (isCheckerDecision()) {
@@ -1402,6 +1407,7 @@ function drawNextPositionButton() {
 	$('#submit').hide();
 	$('#next_position').show();
 	$('#similar_pos_label').show();
+	$('.position_types_allowed').show();
 }
 
 function getParameterValue(parameter, s) {
@@ -1550,6 +1556,10 @@ function checkboxHandler(id) {
 	document.cookie = id + '=' + ($('#' + id + ':checked').length > 0 ? 'true' : 'false') + '; max-age=9999999';
 }
 
+function dectypeSelection() {
+	return $("input:radio[name='position_types_allowed']:checked").val();
+}
+
 function onTrainHtmlLoad() {
 		boardImageWrapper = $('#board_image_wrapper');
 		boardImageWrapper.css('width', BOARD_WIDTH)
@@ -1583,12 +1593,25 @@ function onTrainHtmlLoad() {
 			}
 		}
 
+		var dectypeMo = /\bdectype=(.*)\b/.exec(document.cookie);
+		var dectype = 'either';
+		if (dectypeMo) {
+			dectype = dectypeMo[1];
+		}
+
+		$("input[value='" + dectype + "']").attr('checked', 'checked');
+
+
 		$('#next_position').click(function() {
 			var toNavigateTo = '/';
 			if (new RegExp('\\b' + 'similar_pos' + '=true\\b').test(document.cookie)) {
 				toNavigateTo += '?simtopid=' + encodeURIComponent(gnuId);
 			}
 			window.location = toNavigateTo;
+		});
+
+		$("input[name='position_types_allowed']").click(function() {
+			document.cookie = 'dectype=' + dectypeSelection();
 		});
 }
 

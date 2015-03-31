@@ -121,6 +121,7 @@ def get_leaderboard(offset, limit):
 	from users
 	where submissions >= %s
 	and pwhash is not null
+	and lastsubmission > date_add(utc_timestamp(), interval -60 day)
 	order by rating desc
 	limit %s offset %s
 	"""
@@ -361,13 +362,33 @@ class Application:
 		elif cp.session.get('pid') is not None:
 			result['position_id'] = cp.session.get('pid')
 		else:
-			r = random.random()
-			if r < conf.CHEQUER_DECISION_PORTION:
-				decision_type = gnubggen.CHEQUER_DECISION
-			elif r < conf.CHEQUER_DECISION_PORTION + conf.TAKE_OR_DROP_DECISION_PORTION:
-				decision_type = gnubggen.TAKE_OR_DROP_DECISION
+
+			constraint = cp.request.cookie.get('dectype')
+			if constraint and constraint.value == 'checker':
+				allowed = [
+							gnubggen.CHEQUER_DECISION
+				]
+			elif constraint and constraint.value == 'cube':
+				allowed = [
+							gnubggen.TAKE_OR_DROP_DECISION, 
+							gnubggen.DOUBLE_OR_ROLL_DECISION
+				]
 			else:
-				decision_type = gnubggen.DOUBLE_OR_ROLL_DECISION
+				allowed = [
+							gnubggen.CHEQUER_DECISION,
+							gnubggen.TAKE_OR_DROP_DECISION,
+							gnubggen.DOUBLE_OR_ROLL_DECISION
+				]
+
+			decision_type = None
+			while decision_type not in allowed:
+				r = random.random()
+				if r < conf.CHEQUER_DECISION_PORTION:
+					decision_type = gnubggen.CHEQUER_DECISION
+				elif r < conf.CHEQUER_DECISION_PORTION + conf.TAKE_OR_DROP_DECISION_PORTION:
+					decision_type = gnubggen.TAKE_OR_DROP_DECISION
+				else:
+					decision_type = gnubggen.DOUBLE_OR_ROLL_DECISION
 
 			conn = cp.thread_data.conn
 
@@ -633,7 +654,8 @@ class Application:
 					sql = """
 						update users
 						set rating = %s,
-						submissions = (select count(*) from usersposmatchids where username = %s)
+						submissions = (select count(*) from usersposmatchids where username = %s),
+						lastsubmission = utc_timestamp()
 						where username = %s
 					"""
 					params = [player_rating, get_username_to_use(), get_username_to_use()]
@@ -1084,6 +1106,8 @@ class Application:
 		import scipy as sp
 		result = { }
 
+		cp.thread_data.conn.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
+
 		just_diffs = '''
 		select 
 		upm.eqdiff, 
@@ -1126,6 +1150,7 @@ class Application:
 				figs['std'] = std
 				figs['quartiles'] = quartiles
 
+		cp.thread_data.conn.commit()
 
 		return result
 

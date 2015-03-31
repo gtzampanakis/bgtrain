@@ -80,6 +80,34 @@
 
 				value="Next Position">
 
+				<p style="display:none" class="position_types_allowed">
+				Next position can be:
+				<label>
+					<input type="radio"
+						## style="display:none;"
+						name="position_types_allowed"
+						id="allow_checker"
+						value="checker">
+						Checker
+				</label>
+				<label>
+					<input type="radio"
+						## style="display:none;"
+						name="position_types_allowed"
+						id="allow_cube"
+						value="cube">
+						Cube
+				</label>
+				<label>
+					<input type="radio"
+						## style="display:none;"
+						name="position_types_allowed"
+						id="allow_either"
+						value="either">
+						Either
+				</label>
+				</p>
+
 				<p id="decision_description"></p>
 				<label id="auto_submit_label">
 					<input type="checkbox" id="auto_submit" value="true">Auto submit
