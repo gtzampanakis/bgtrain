@@ -1,6 +1,6 @@
 import math
 
-K = 6. # The higher this is, the more effective is a single position to a user's rating.
+K = 4.5 # The higher this is, the more effective is a single position to a user's rating.
 KP = 260. # The higher this is, the higher the spread of the ratings between users.
 
 # Chosen so that .05 eq_diff implies a .5 outcome and 0 eq_diff implies a 1 outcome:
