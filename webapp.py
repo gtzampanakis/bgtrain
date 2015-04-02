@@ -1125,13 +1125,13 @@ class Application:
 
 		rating_quintiles = sp.percentile(ratings, [20, 40, 60, 80])
 
-		result['rating_quintile_to_figs'] = { }
+		result['mean_rating_of_quintile_to_figs'] = { }
 
 		last_quint = -1000
 		for quint in rating_quintiles + [100000]:
 			diffs = [r[0] for r in rows if last_quint < r[1] < quint]
 			ratings = [r[1] for r in rows if last_quint < r[1] < quint]
-			quint = sp.mean(ratings)
+			mean_rating_of_quintile = sp.mean(ratings)
 			if len(diffs) > 0:
 				n = len(diffs)
 				mean = sp.mean(diffs)
@@ -1140,7 +1140,7 @@ class Application:
 				last_quint = quint
 
 				figs = { }
-				result['rating_quintile_to_figs'][quint] = figs
+				result['mean_rating_of_quintile_to_figs'][mean_rating_of_quintile] = figs
 				figs['n'] = n
 				figs['mean'] = mean
 				figs['std'] = std
