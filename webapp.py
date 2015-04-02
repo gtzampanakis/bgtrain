@@ -1111,9 +1111,10 @@ class Application:
 		just_diffs = '''
 		select 
 		upm.eqdiff, 
-		upm.ratinguser - upm.increment
+		(upm.ratinguser - upm.increment) - (upm.ratingpos + upm.increment)
 		from usersposmatchids upm
 		where upm.eqdiff is not null
+		and upm.increment is not null
 		limit 100000
 		'''
 
@@ -1129,6 +1130,8 @@ class Application:
 		last_quint = -1000
 		for quint in rating_quintiles + [100000]:
 			diffs = [r[0] for r in rows if last_quint < r[1] < quint]
+			ratings = [r[1] for r in rows if last_quint < r[1] < quint]
+			quint = sp.mean(ratings)
 			if len(diffs) > 0:
 				n = len(diffs)
 				mean = sp.mean(diffs)

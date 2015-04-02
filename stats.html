@@ -19,7 +19,7 @@
 <table border=1>
 % for quint in sorted(rating_quintile_to_figs.keys()):
 	<% fig_obj = rating_quintile_to_figs[quint] %>
-	<tr><td>rating quintile</td><td>${'%.2f' % quint}</td>
+	<tr><td>mean rdiff of quintile</td><td>${'%.2f' % quint}</td>
 	<tr><td>n</td><td>${fig_obj['n']}</td>
 	<tr><td>mean</td><td>${'%.3f' % fig_obj['mean']}</td>
 	<tr><td>SE</td><td>${'%.3f' % (fig_obj['std'] / fig_obj['n']**.5)}</td>
