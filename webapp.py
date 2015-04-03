@@ -47,48 +47,29 @@ def html(f):
 		return f(self, *args, **kwargs)
 	return f_
 
-def get_rating_for_username(username, for_update = False):
+def get_user_info_for_username(username, for_update = False):
 	sql = """
-		select rating
+		select rating, submissions
 		from users
 		where username = %s
 		{for_update}
 	""".format(for_update = 'for update' if for_update else '')
 
+	player_rating = DEFAULT_RATING
+	submissions = 0
+
 	row = cp.thread_data.conn.execute(sql, [username]).fetchone()
 	if row is not None:
 		player_rating = row[0]
-	else:
-		player_rating = DEFAULT_RATING
+		submissions = row[1]
 
-	if player_rating is None:
-		player_rating = DEFAULT_RATING
-
-	return player_rating
+	return player_rating, submissions
 
 def get_username_to_use_short():
 	u = get_username_to_use()
 	u = u if len(u) <= 25 else u[:22] + '...'
 	return u
 
-
-def get_positions_played_for_username(username):
-	sql = """
-		select count(*)
-		from usersposmatchids
-		where username = %s
-	"""
-
-	row = cp.thread_data.conn.execute(sql, [username]).fetchone()
-	if row is not None:
-		player_rating = row[0]
-	else:
-		player_rating = DEFAULT_RATING
-
-	if player_rating is None:
-		player_rating = DEFAULT_RATING
-
-	return player_rating
 
 def get_number_of_positions():
 	sql = """
@@ -288,6 +269,10 @@ def select_new_gnuid(decision_type, username_to_use):
 			select 1 from usersposmatchids us
 			where us.username = %s and us.posmatchid = pm.posmatchid
 		)
+		and {pos_virgin} exists (
+			select 1 from usersposmatchids us2
+			where us2.posmatchid = pm.posmatchid
+		)
 		order by 
 		pm.rating {rating_sort_dir}
 		limit %s
@@ -297,25 +282,27 @@ def select_new_gnuid(decision_type, username_to_use):
 	"""
 
 	for not_ in ['not', '']:
-		for up_down in ['up', 'down']:
-			sql = sql_tmpl.format(
-					not_ = not_,
-					comp_op = '>=' if up_down == 'up' else '<',
-					rating_sort_dir = 'asc' if up_down == 'up' else 'desc',
-			)
-			params = [
-					decision_type,
-					conf.POSITIONS_VERSION_TO_USE,
-					username_to_use,
-					conf.RATING_DECREMENT_FOR_POS_SELECTION,
-					username_to_use,
-			]
-			params += [
-					conf.NUMBER_OF_CANDIDATES,
-			]
-			row = cp.thread_data.conn.execute(sql, params).fetchone()
-			if row is not None:
-				return row[0]
+		for pos_virgin in ['', 'not']:
+			for up_down in ['up', 'down']:
+				sql = sql_tmpl.format(
+						not_ = not_,
+						comp_op = '>=' if up_down == 'up' else '<',
+						rating_sort_dir = 'asc' if up_down == 'up' else 'desc',
+						pos_virgin = pos_virgin,
+				)
+				params = [
+						decision_type,
+						conf.POSITIONS_VERSION_TO_USE,
+						username_to_use,
+						conf.RATING_DECREMENT_FOR_POS_SELECTION,
+						username_to_use,
+				]
+				params += [
+						conf.NUMBER_OF_CANDIDATES,
+				]
+				row = cp.thread_data.conn.execute(sql, params).fetchone()
+				if row is not None:
+					return row[0]
 		
 
 
@@ -595,7 +582,8 @@ class Application:
 								diff += -eq_diff -conf.PLY_PENALTY
 
 
-					player_rating = get_rating_for_username(get_username_to_use(), for_update = True)
+					player_rating, player_submissions = get_user_info_for_username(
+												get_username_to_use(), for_update = True)
 
 					sql = """
 						select ratingpos
@@ -654,11 +642,11 @@ class Application:
 					sql = """
 						update users
 						set rating = %s,
-						submissions = (select count(*) from usersposmatchids where username = %s),
+						submissions = %s,
 						lastsubmission = utc_timestamp()
 						where username = %s
 					"""
-					params = [player_rating, get_username_to_use(), get_username_to_use()]
+					params = [player_rating, player_submissions + 1, get_username_to_use()]
 					rs = conn.execute(sql,  params)
 
 					sql = """

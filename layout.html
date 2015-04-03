@@ -76,6 +76,10 @@
 						<%block name="login">
 						<form action="" method="post">
 							% if cp.session.get('username') is not None:
+							<%
+							user_info = webapp.get_user_info_for_username(
+														cp.session['username'])
+							%>
 							<table id="user_information">
 								<tr>
 									<td>
@@ -91,7 +95,7 @@
 									</td>
 									<td>
 									<span class="stat" id="rating">
-										${'%.2f' % webapp.get_rating_for_username(cp.session['username'])|h}
+										${'%.2f' % user_info[0]|h}
 									</span>
 									</td>
 								</tr>
@@ -101,7 +105,7 @@
 									</td>
 									<td>
 									<span class="stat" id="played_count">
-										${'%d' % webapp.get_positions_played_for_username(cp.session['username'])|h}
+										${'%d' % user_info[1]|h}
 									</span>
 									</td>
 								</tr>
