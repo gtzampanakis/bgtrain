@@ -84,28 +84,38 @@
 				Next position can be:
 				<label>
 					<input type="radio"
-						## style="display:none;"
 						name="position_types_allowed"
 						id="allow_checker"
 						value="checker">
-						Checker
+						checker
 				</label>
 				<label>
 					<input type="radio"
-						## style="display:none;"
 						name="position_types_allowed"
 						id="allow_cube"
 						value="cube">
-						Cube
+						cube
 				</label>
 				<label>
 					<input type="radio"
-						## style="display:none;"
 						name="position_types_allowed"
 						id="allow_either"
 						value="either">
-						Either
+						either
 				</label>
+				</p>
+
+				<p style="display:none" class="position_tags_allowed">
+				Next position can be:
+				% for tag in ['opening', 'closing', 'midgame', 'anytag']:
+					<label>
+						<input type="radio"
+							name="position_tags_allowed"
+							id="allow_${tag}"
+							value="${tag}">
+							${tag.replace('tag', '')}
+					</label>
+				% endfor
 				</p>
 
 				<p id="decision_description"></p>

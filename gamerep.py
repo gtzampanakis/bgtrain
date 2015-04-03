@@ -107,12 +107,14 @@ def points25_to_pips(points25):
 		s += pointi * point
 	return s
 		
-def position_id_to_max_pips(position_id):
+def position_id_to_pips(position_id):
 	points = position_id_to_points(position_id)
 	a = points[:25]
 	b = points[25:]
-	result = max([points25_to_pips(a), points25_to_pips(b)])
-	return result
+	return [points25_to_pips(a), points25_to_pips(b)]
+
+def position_id_to_max_pips(position_id):
+	return max(position_id_to_pips(position_id))
 
 
 def set_dice_to_zero(mid):

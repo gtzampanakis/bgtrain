@@ -1407,7 +1407,7 @@ function drawNextPositionButton() {
 	$('#submit').hide();
 	$('#next_position').show();
 	$('#similar_pos_label').show();
-	$('.position_types_allowed').show();
+	$('.position_types_allowed, .position_tags_allowed').show();
 }
 
 function getParameterValue(parameter, s) {
@@ -1560,6 +1560,10 @@ function dectypeSelection() {
 	return $("input:radio[name='position_types_allowed']:checked").val();
 }
 
+function tagSelection() {
+	return $("input:radio[name='position_tags_allowed']:checked").val();
+}
+
 function onTrainHtmlLoad() {
 		boardImageWrapper = $('#board_image_wrapper');
 		boardImageWrapper.css('width', BOARD_WIDTH)
@@ -1599,19 +1603,27 @@ function onTrainHtmlLoad() {
 			dectype = dectypeMo[1];
 		}
 
+		var tagMo = /\btags=(.+?)\b/.exec(document.cookie);
+		var tag = 'anytag';
+		if (tagMo) {
+			tag = tagMo[1];
+		}
+
 		$("input[value='" + dectype + "']").attr('checked', 'checked');
+		$("input[value='" + tag + "']").attr('checked', 'checked');
 
 
 		$('#next_position').click(function() {
 			var toNavigateTo = '/';
-			if (new RegExp('\\b' + 'similar_pos' + '=true\\b').test(document.cookie)) {
-				toNavigateTo += '?simtopid=' + encodeURIComponent(gnuId);
-			}
 			window.location = toNavigateTo;
 		});
 
 		$("input[name='position_types_allowed']").click(function() {
 			document.cookie = 'dectype=' + dectypeSelection();
+		});
+
+		$("input[name='position_tags_allowed']").click(function() {
+			document.cookie = 'tags=' + tagSelection();
 		});
 }
 

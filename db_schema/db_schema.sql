@@ -185,3 +185,14 @@ create index usersposmatchids_idx1 on usersposmatchids(eqdiff);
 alter table users add column (lastsubmission datetime);
 
 alter table usersposmatchids add (increment float);
+
+create table postags (
+	ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+	POSMATCHID CHAR(27) NOT NULL REFERENCES POSMATCHIDS(POSMATCHID) ON DELETE CASCADE,
+	TAG VARCHAR(30) NOT NULL,
+	CREATEDAT DATETIME NOT NULL
+);
+
+create unique index postagsidx1 on postags(posmatchid, tag);
+
+alter table posmatchids add column (tagged char(1));

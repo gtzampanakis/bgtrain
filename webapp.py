@@ -251,7 +251,7 @@ def load_comments(gnuid):
 				comment[eli] = el
 			tree.append(comment)
 
-def select_new_gnuid(decision_type, username_to_use):
+def select_new_gnuid(decision_type, username_to_use, tags):
 
 	sql_tmpl = """
 	select * from (
@@ -273,6 +273,7 @@ def select_new_gnuid(decision_type, username_to_use):
 			select 1 from usersposmatchids us2
 			where us2.posmatchid = pm.posmatchid
 		)
+		{tagfilter}
 		order by 
 		pm.rating {rating_sort_dir}
 		limit %s
@@ -283,26 +284,37 @@ def select_new_gnuid(decision_type, username_to_use):
 
 	for not_ in ['not', '']:
 		for pos_virgin in ['', 'not']:
-			for up_down in ['up', 'down']:
-				sql = sql_tmpl.format(
-						not_ = not_,
-						comp_op = '>=' if up_down == 'up' else '<',
-						rating_sort_dir = 'asc' if up_down == 'up' else 'desc',
-						pos_virgin = pos_virgin,
-				)
-				params = [
-						decision_type,
-						conf.POSITIONS_VERSION_TO_USE_FOR_AUTO_SELECTION,
-						username_to_use,
-						conf.RATING_DECREMENT_FOR_POS_SELECTION,
-						username_to_use,
-				]
-				params += [
-						conf.NUMBER_OF_CANDIDATES,
-				]
-				row = cp.thread_data.conn.execute(sql, params).fetchone()
-				if row is not None:
-					return row[0]
+			for tagfilter in [True, False]:
+				for up_down in ['up', 'down']:
+					tagfilter_sql = ''
+					if tagfilter and tags:
+						tagfilter_sql = '''
+							and exists (
+								select 1 from postags
+								where postags.posmatchid = pm.posmatchid
+								and postags.tag = '%s'
+							)
+						''' % tags
+					sql = sql_tmpl.format(
+							not_ = not_,
+							comp_op = '>=' if up_down == 'up' else '<',
+							rating_sort_dir = 'asc' if up_down == 'up' else 'desc',
+							pos_virgin = pos_virgin,
+							tagfilter = tagfilter_sql,
+					)
+					params = [
+							decision_type,
+							conf.POSITIONS_VERSION_TO_USE_FOR_AUTO_SELECTION,
+							username_to_use,
+							conf.RATING_DECREMENT_FOR_POS_SELECTION,
+							username_to_use,
+					]
+					params += [
+							conf.NUMBER_OF_CANDIDATES,
+					]
+					row = cp.thread_data.conn.execute(sql, params).fetchone()
+					if row is not None:
+						return row[0]
 		
 
 
@@ -391,9 +403,15 @@ class Application:
 				'''
 				rs = conn.execute(sql, [username_to_use])
 
+			tags_cookie = cp.request.cookie.get('tags')
+			tags = None
+			if tags_cookie and tags_cookie.value in ['opening', 'closing', 'midgame']:
+				tags = tags_cookie.value
+
 			result['position_id'] = select_new_gnuid(
 					decision_type, 
 					username_to_use, 
+					tags,
 			)
 
 		cp.session['pid'] = result['position_id']
