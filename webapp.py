@@ -292,7 +292,7 @@ def select_new_gnuid(decision_type, username_to_use):
 				)
 				params = [
 						decision_type,
-						conf.POSITIONS_VERSION_TO_USE,
+						conf.POSITIONS_VERSION_TO_USE_FOR_AUTO_SELECTION,
 						username_to_use,
 						conf.RATING_DECREMENT_FOR_POS_SELECTION,
 						username_to_use,
