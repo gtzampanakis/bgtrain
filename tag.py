@@ -45,7 +45,6 @@ if __name__ == '__main__':
 			from posmatchids
 			where 1=1
 			and (tagged <> 1 or tagged is null)
-			limit 10000
 		'''
 
 		rs = conn.execute(SQL)
@@ -54,6 +53,9 @@ if __name__ == '__main__':
 			for func, tag in FUNC_TO_TAG.iteritems():
 				if func(posmatchid):
 					add_tag(posmatchid, tag)
+			conn.execute('update posmatchids set tagged = 1 where posmatchid = %s', 
+																		[posmatchid])
 			if rowi % 200 == 0:
+				print rowi
 				conn.commit()
 
