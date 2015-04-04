@@ -337,6 +337,20 @@ def get_users_current_gnuid():
 	if row is not None:
 		return row[0]
 
+
+def check_if_gnuid_valid(gnuid):
+	sql = """
+	select 1
+	from posmatchids
+	where posmatchid = %s
+	and version >= %s
+	"""
+	row = cp.thread_data.conn.execute(sql, 
+			[gnuid, conf.POSITIONS_VERSION_TO_USE_FOR_AUTO_SELECTION]).fetchone()
+	if row is not None:
+		return True
+	return False
+
 class Application:
 
 	@cp.expose
@@ -356,9 +370,9 @@ class Application:
 	def index(self, *args, **kwargs):
 
 		result = { }
-		if kwargs.get('pid') is not None:
+		if kwargs.get('pid') is not None and check_if_gnuid_valid(kwargs.get('pid')):
 			result['position_id'] = kwargs.get('pid')
-		elif cp.session.get('pid') is not None:
+		elif cp.session.get('pid') is not None and check_if_gnuid_valid(cp.session.get('pid')):
 			result['position_id'] = cp.session.get('pid')
 		else:
 
