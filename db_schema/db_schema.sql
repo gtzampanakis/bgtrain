@@ -195,8 +195,6 @@ create table postags (
 
 create unique index postagsidx1 on postags(posmatchid, tag);
 
-alter table posmatchids add column (tagged char(1));
-
 create table tags (
 	TAG VARCHAR(30) PRIMARY KEY,
 	DONETAGGING CHAR(1),
