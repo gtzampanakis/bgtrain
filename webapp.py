@@ -63,7 +63,7 @@ def get_user_info_for_username(username, for_update = False):
 		player_rating = row[0]
 		submissions = row[1]
 
-	return player_rating, submissions
+	return player_rating, (submissions or 0)
 
 def get_username_to_use_short():
 	u = get_username_to_use()
