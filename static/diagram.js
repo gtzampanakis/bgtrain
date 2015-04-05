@@ -1561,7 +1561,7 @@ function dectypeSelection() {
 }
 
 function tagSelection() {
-	return $("input:radio[name='position_tags_allowed']:checked").val();
+	return $(".position_tags_allowed   select").val();
 }
 
 function onTrainHtmlLoad() {
@@ -1610,7 +1610,7 @@ function onTrainHtmlLoad() {
 		}
 
 		$("input[value='" + dectype + "']").attr('checked', 'checked');
-		$("input[value='" + tag + "']").attr('checked', 'checked');
+		$('.position_tags_allowed select').val(tag);
 
 
 		$('#next_position').click(function() {
@@ -1622,7 +1622,7 @@ function onTrainHtmlLoad() {
 			document.cookie = 'dectype=' + dectypeSelection();
 		});
 
-		$("input[name='position_tags_allowed']").click(function() {
+		$(".position_tags_allowed select").change(function() {
 			document.cookie = 'tags=' + tagSelection();
 		});
 }

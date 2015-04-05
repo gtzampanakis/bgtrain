@@ -82,40 +82,25 @@
 
 				<p style="display:none" class="position_types_allowed">
 				Next position can be:
-				<label>
-					<input type="radio"
-						name="position_types_allowed"
-						id="allow_checker"
-						value="checker">
-						checker
-				</label>
-				<label>
-					<input type="radio"
-						name="position_types_allowed"
-						id="allow_cube"
-						value="cube">
-						cube
-				</label>
-				<label>
-					<input type="radio"
-						name="position_types_allowed"
-						id="allow_either"
-						value="either">
-						either
-				</label>
+				% for dectype in ['checker', 'cube', 'either']:
+					<label>
+						<input type="radio"
+							name="position_types_allowed"
+							id="allow_${dectype}"
+							value="${dectype}">
+							${dectype}
+					</label>
+				% endfor
 				</p>
 
 				<p style="display:none" class="position_tags_allowed">
 				Next position can be:
-				% for tag in ['opening', 'closing', 'midgame', 'anytag']:
-					<label>
-						<input type="radio"
-							name="position_tags_allowed"
-							id="allow_${tag}"
-							value="${tag}">
-							${tag.replace('tag', '')}
-					</label>
+				<select name="position_tags_allowed">
+				% for tag in ['anytag', 'opening', 'closing', 'midgame', 'bearoff']:
+					<option
+						value="${tag}">${tag.replace('tag', '')}</option>
 				% endfor
+				</select>
 				</p>
 
 				<p id="decision_description"></p>

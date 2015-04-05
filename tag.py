@@ -1,4 +1,4 @@
-import logging, os
+import logging, os, sys
 import gnubg.common as gc
 import gnubg.gamerep as gamerep
 
@@ -19,10 +19,15 @@ def is_midgame(matchid):
 	if all(100 < pips < 120 for pips in pips_pair):
 		return True
 
-FUNC_TO_TAG = {
-		is_opening: 'opening',
-		is_closing: 'closing',
-		is_midgame: 'midgame',
+def is_bearoff(matchid):
+	points = gamerep.position_id_to_points(matchid)[25:]
+	if sum(points[6:]) == 0:
+		return True
+
+TAG_TO_FUNC = {
+		'opening': is_opening,
+		'closing': is_closing,
+		'midgame': is_midgame,
 }
 
 
@@ -39,23 +44,38 @@ if __name__ == '__main__':
 			'''
 			conn.execute(insert_tag_sql, [matchid, tag])
 
+		TAG_SQL = '''
+			select tag, donetagging
+			from tags
+			order by tag
+		'''
+
+		tags_to_process = [
+				tag
+				for tag, donetagging
+				in conn.execute(TAG_SQL)
+				if donetagging != '1'
+		]
+
+		if len(tags_to_process) == 0:
+			sys.exit()
+
 		SQL = '''
 			select
 			posmatchid
 			from posmatchids
 			where 1=1
-			and (tagged <> 1 or tagged is null)
 		'''
 
 		rs = conn.execute(SQL)
 		for rowi, row in enumerate(rs):
 			posmatchid = row[0]
-			for func, tag in FUNC_TO_TAG.iteritems():
+			for tag in tags_to_process:
+				func = globals()['is_' + tag]
 				if func(posmatchid):
 					add_tag(posmatchid, tag)
-			conn.execute('update posmatchids set tagged = 1 where posmatchid = %s', 
-																		[posmatchid])
 			if rowi % 200 == 0:
 				print rowi
 				conn.commit()
+		conn.execute('update tags set donetagging = 1')
 

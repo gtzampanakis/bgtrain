@@ -196,3 +196,20 @@ create table postags (
 create unique index postagsidx1 on postags(posmatchid, tag);
 
 alter table posmatchids add column (tagged char(1));
+
+create table tags (
+	TAG VARCHAR(30) PRIMARY KEY,
+	DONETAGGING CHAR(1),
+	CREATEDAT DATETIME NOT NULL
+);
+
+ALTER TABLE `postags` 
+ADD INDEX `tagsfk_idx` (`TAG` ASC);
+ALTER TABLE `postags` 
+ADD CONSTRAINT `tagsfk`
+  FOREIGN KEY (`TAG`)
+  REFERENCES `tags` (`TAG`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+

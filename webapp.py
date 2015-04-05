@@ -419,7 +419,7 @@ class Application:
 
 			tags_cookie = cp.request.cookie.get('tags')
 			tags = None
-			if tags_cookie and tags_cookie.value in ['opening', 'closing', 'midgame']:
+			if tags_cookie and tags_cookie.value in ['opening', 'closing', 'midgame', 'bearoff']:
 				tags = tags_cookie.value
 
 			result['position_id'] = select_new_gnuid(
@@ -678,7 +678,8 @@ class Application:
 						lastsubmission = utc_timestamp()
 						where username = %s
 					"""
-					params = [player_rating, player_submissions + 1, get_username_to_use()]
+					params = [player_rating, (player_submissions or 0) + 1, 
+														get_username_to_use()]
 					rs = conn.execute(sql,  params)
 
 					sql = """
