@@ -1,10 +1,22 @@
-import math
+import math, datetime
 
-K = 4.5 # The higher this is, the more effective is a single position to a user's rating.
+REF_DATE = datetime.date(2015, 4, 1)
+
 KP = 260. # The higher this is, the higher the spread of the ratings between users.
 
 # Chosen so that .05 eq_diff implies a .5 outcome and 0 eq_diff implies a 1 outcome:
 a = - math.log(.5) / .025
+
+def decay(x):
+	"""
+	This decays slowly towards .8.
+	"""
+	return math.exp(-x/60. + 1.2) + .8
+
+def K():
+# The higher K is, the more effective is a single position to a user's rating.
+	days = (datetime.date.today() - REF_DATE).days
+	return decay(days)
 
 def phi(x):
 	'Cumulative distribution function for the standard normal distribution'
@@ -28,7 +40,7 @@ def match_increment(player_rating, position_rating, eq_diff):
 	p_from_rating = phi(rdiff / KP)
 	p_from_selection = equity_diff_to_p(eq_diff)
 	surplus = p_from_selection - p_from_rating
-	result = K * surplus
+	result = K() * surplus
 	return result
 	
 if __name__ == '__main__':
