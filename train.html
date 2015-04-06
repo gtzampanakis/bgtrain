@@ -96,7 +96,7 @@
 				<p style="display:none" class="position_tags_allowed">
 				Next position can be:
 				<select name="position_tags_allowed">
-				% for tag in ['anytag', 'opening', 'closing', 'midgame', 'bearoff']:
+				% for tag in webapp.AVAILABLE_TAGS:
 					<option
 						value="${tag}">${tag.replace('tag', '')}</option>
 				% endfor

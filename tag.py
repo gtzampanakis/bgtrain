@@ -24,11 +24,67 @@ def is_bearoff(matchid):
 	if sum(points[6:]) == 0:
 		return True
 
-TAG_TO_FUNC = {
-		'opening': is_opening,
-		'closing': is_closing,
-		'midgame': is_midgame,
-}
+def is_bearoffopp(matchid):
+	points = gamerep.position_id_to_points(matchid)[:25]
+	if sum(points[6:]) == 0:
+		return True
+
+def is_backgame(matchid):
+	if is_nocontact(matchid):
+		return False
+	points = gamerep.position_id_to_points(matchid)[25:]
+	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
+	board = points[-7:-1]
+	if (sum(1 for point in board if point >= 2) >= 2
+							and player_pips - opp_pips >= 55):
+		return True
+
+def is_backgameopp(matchid):
+	if is_nocontact(matchid):
+		return False
+	points = gamerep.position_id_to_points(matchid)[:25]
+	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
+	board = points[-7:-1]
+	if (sum(1 for point in board if point >= 2) >= 2
+							and opp_pips - player_pips >= 55):
+		return True
+
+def is_holding(matchid):
+	if is_nocontact(matchid):
+		return False
+	points = gamerep.position_id_to_points(matchid)[25:]
+	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
+	board = points[-7:-1]
+	if (sum(1 for point in board if point >= 2) == 1
+							and player_pips - opp_pips >= 55):
+		return True
+
+def is_holdingopp(matchid):
+	if is_nocontact(matchid):
+		return False
+	points = gamerep.position_id_to_points(matchid)[:25]
+	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
+	board = points[-7:-1]
+	if (sum(1 for point in board if point >= 2) == 1
+							and opp_pips - player_pips >= 55):
+		return True
+
+def points_to_most_backward(points):
+	for pointi in  xrange(24, -1, -1):
+		if points[pointi] != 0:
+			return pointi
+
+
+def is_nocontact(matchid):
+	if is_bearoff(matchid) or is_bearoffopp(matchid):
+		return False
+	points = gamerep.position_id_to_points(matchid)
+	player1points = points[25:]
+	player2points = points[:25]
+	player1mostbackward = points_to_most_backward(player1points)
+	player2mostbackward = points_to_most_backward(player2points)
+	if player1mostbackward + player2mostbackward <= 22:
+		return True
 
 
 if __name__ == '__main__':
@@ -74,7 +130,7 @@ if __name__ == '__main__':
 				func = globals()['is_' + tag]
 				if func(posmatchid):
 					add_tag(posmatchid, tag)
-			if rowi % 200 == 0:
+			if rowi % 500 == 0:
 				print rowi
 				conn.commit()
 		conn.execute('update tags set donetagging = 1')

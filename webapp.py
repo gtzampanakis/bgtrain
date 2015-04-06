@@ -40,6 +40,12 @@ def get_preferences():
 	d.update(rs)
 	return d
 
+AVAILABLE_TAGS = [
+	'opening', 'closing', 'midgame', 'bearoff', 'bearoffopp',
+	'backgame', 'backgameopp', 'holding', 'holdingopp',
+	'nocontact',
+]
+
 
 def html(f):
 	def f_(self, *args, **kwargs):
@@ -419,7 +425,7 @@ class Application:
 
 			tags_cookie = cp.request.cookie.get('tags')
 			tags = None
-			if tags_cookie and tags_cookie.value in ['opening', 'closing', 'midgame', 'bearoff']:
+			if tags_cookie and tags_cookie.value in AVAILABLE_TAGS:
 				tags = tags_cookie.value
 
 			result['position_id'] = select_new_gnuid(

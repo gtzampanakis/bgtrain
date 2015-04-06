@@ -108,6 +108,9 @@ def points25_to_pips(points25):
 	return s
 		
 def position_id_to_pips(position_id):
+	"""
+	Returns [opp_pips, player_pips].
+	"""
 	points = position_id_to_points(position_id)
 	a = points[:25]
 	b = points[25:]
@@ -144,6 +147,10 @@ def position_id_to_checker_list(pid):
 
 
 if __name__ == '__main__':
+	if 1:
+		print position_id_to_points('6jbBASRwt4kHAA:8AmyAAAAIAAE')[:25]
+		print position_id_to_points('6jbBASRwt4kHAA:8AmyAAAAIAAE')[25:]
+		print position_id_to_pips('6jbBASRwt4kHAA:8AmyAAAAIAAE')
 	if 0:
 		print position_id_to_points('4HPwATDgc/ABMA')
 		print points25_to_pips(position_id_to_points('4HPwATDgc/ABMA')[:25])
