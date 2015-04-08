@@ -289,8 +289,8 @@ def select_new_gnuid(decision_type, username_to_use, tags):
 	"""
 
 	for not_ in ['not', '']:
-		for pos_virgin in ['', 'not']:
-			for tagfilter in [True, False]:
+		for tagfilter in [True, False]:
+			for pos_virgin in ['', 'not']:
 				for up_down in ['up', 'down']:
 					tagfilter_sql = ''
 					if tagfilter and tags:
@@ -439,6 +439,18 @@ class Application:
 		virtual_submit_result = self.virtual_submit(gnuid)
 		
 		result.update(virtual_submit_result)
+
+		TAGS_SQL = '''
+			select tag
+			from postags
+			where posmatchid = %s
+			order by tag
+		'''
+		postags = ', '.join(
+			r[0] for r in
+			cp.thread_data.conn.execute(TAGS_SQL, [gnuid])
+		)
+		result['postags'] = postags
 
 		return result
 
