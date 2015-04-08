@@ -54,7 +54,7 @@ def is_holding(matchid):
 		return False
 	points = gamerep.position_id_to_points(matchid)[25:]
 	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
-	board = points[-7:-1]
+	board = points[-8:-3]
 	if (sum(1 for point in board if point >= 2) == 1
 							and player_pips - opp_pips >= 55):
 		return True
@@ -64,7 +64,7 @@ def is_holdingopp(matchid):
 		return False
 	points = gamerep.position_id_to_points(matchid)[:25]
 	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
-	board = points[-7:-1]
+	board = points[-8:-3]
 	if (sum(1 for point in board if point >= 2) == 1
 							and opp_pips - player_pips >= 55):
 		return True

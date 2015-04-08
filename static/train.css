@@ -5,7 +5,7 @@ p {
 	width: 10pt;
 }
 
-#gnu_id {
+#gnu_id, #postags {
 	font-size: smaller;
 }
 #gnu_id span {

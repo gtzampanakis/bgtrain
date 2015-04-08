@@ -96,7 +96,7 @@
 				<p style="display:none" class="position_tags_allowed">
 				Next position can be:
 				<select name="position_tags_allowed">
-				% for tag in webapp.AVAILABLE_TAGS:
+				% for tag in ['anytag'] + webapp.AVAILABLE_TAGS:
 					<option
 						value="${tag}">${tag.replace('tag', '')}</option>
 				% endfor
@@ -127,6 +127,8 @@
 					<input id="post_report_button" onclick="reportPosition(); return false;" type="button" value="Send">
 					</p>
 				</div>
+
+				<p id="postags">Position tags: ${postags|h}
 
 			</div>
 			</td>
