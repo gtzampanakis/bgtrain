@@ -41,6 +41,9 @@
 					   mode: 'time'
 					   ,timezone: 'browser'
 					}
+					,series: {
+						color: 'green'
+					}
 				}
 			);
 		});
@@ -55,7 +58,6 @@
 	<h2>Rating history for user <em>${webapp.get_username_to_use_short() | h}</em></h2>
 	<div id="plot">
 	</div>
-	<p>Only the last ${conf.RATING_HISTORY_MAX_POINTS|h} position submissions are used to produce the chart.
 
 </%block>
 

@@ -4,7 +4,7 @@ REF_DATE = datetime.date(2015, 4, 1)
 
 KP = 260. # The higher this is, the higher the spread of the ratings between users.
 
-# Chosen so that .05 eq_diff implies a .5 outcome and 0 eq_diff implies a 1 outcome:
+# Chosen so that .025 eq_diff implies a .5 outcome and 0 eq_diff implies a 1 outcome:
 a = - math.log(.5) / .025
 
 def decay(x):

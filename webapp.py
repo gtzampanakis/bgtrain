@@ -823,6 +823,7 @@ class Application:
 				join posmatchids pm on pm.posmatchid = upm.posmatchid
 				where upm.username = %s
 				and pm.version >= %s
+				and upm.submittedat > date_add(utc_timestamp(), interval -60 day)
 				order by upm.submittedat desc
 				limit %s /* Just to limit the max amount of data. */
 			) sq
