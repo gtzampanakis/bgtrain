@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 ROOT_DIR = os.path.dirname(__file__)
 ENCODING = 'utf-8'
 
-DEFAULT_RATING = 1500.
+DEFAULT_PLAYER_RATING = 1500.
+DEFAULT_POSITION_RATING = 1650.
 
 lookup = ml.TemplateLookup(directories = [
 	ROOT_DIR,
@@ -53,6 +54,18 @@ def html(f):
 		return f(self, *args, **kwargs)
 	return f_
 
+def get_info_for_position(posmatchid, for_update = False):
+	sql = '''
+		select rating, submissions
+		from posmatchids
+		where posmatchid = %s
+		{for_update}
+	'''.format(for_update = 'for update' if for_update else '')
+	row = cp.thread_data.conn.execute(sql, [posmatchid]).fetchone()
+	if row:
+		return (row[0], (row[1] or DEFAULT_POSITION_RATING))
+
+
 def get_user_info_for_username(username, for_update = False):
 	sql = """
 		select rating, submissions
@@ -61,7 +74,7 @@ def get_user_info_for_username(username, for_update = False):
 		{for_update}
 	""".format(for_update = 'for update' if for_update else '')
 
-	player_rating = DEFAULT_RATING
+	player_rating = DEFAULT_PLAYER_RATING
 	submissions = 0
 
 	row = cp.thread_data.conn.execute(sql, [username]).fetchone()
@@ -217,23 +230,6 @@ def get_logged_in_user_email():
 						[get_logged_in_username()]).fetchone()
 	return users_row[0]
 
-def get_rating_of_position(gnu_id):
-	sql = """
-		select ratingpos
-		from usersposmatchids
-		where posmatchid = %s
-		order by submittedat
-		limit 1
-	"""
-	row = cp.thread_data.conn.execute(sql, [gnu_id]).fetchone()
-	rating = DEFAULT_RATING
-	if row is not None:
-		rating = row[0]
-
-	if rating is not None:
-		return rating
-	else:
-		return DEFAULT_RATING
 	
 comment = collections.namedtuple('Comment', ['id', 'usernmame', 'postedat', 'parentid', 'comment'])
 
@@ -634,24 +630,9 @@ class Application:
 
 					player_rating, player_submissions = get_user_info_for_username(
 												get_username_to_use(), for_update = True)
-
-					sql = """
-						select ratingpos
-						from usersposmatchids
-						where posmatchid = %s
-						order by submittedat desc
-						limit 1
-						for update
-					"""
-
-					row = conn.execute(sql, [gnuid]).fetchone()
-					if row is not None:
-						position_rating = row[0]
-					else:
-						position_rating = DEFAULT_RATING
-
-					if position_rating is None:
-						position_rating = DEFAULT_RATING
+					
+					position_rating, position_submissions = get_info_for_position(
+																gnuid, for_update = True)
 
 					logger.info('equity diff: %.3f', diff)
 					to_increment = elo.match_increment(
@@ -702,10 +683,11 @@ class Application:
 
 					sql = """
 						update posmatchids
-						set rating = %s
+						set rating = %s,
+						submissions = %s
 						where posmatchid = %s
 					"""
-					params = [position_rating, gnuid]
+					params = [position_rating, position_submissions + 1, gnuid]
 					rs = conn.execute(sql,  params)
 
 

@@ -210,4 +210,4 @@ ADD CONSTRAINT `tagsfk`
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
-
+alter table posmatchids add (submissions INTEGER);
