@@ -635,13 +635,15 @@ class Application:
 																gnuid, for_update = True)
 
 					logger.info('equity diff: %.3f', diff)
-					to_increment = elo.match_increment(
+					to_increment_player, to_increment_position = elo.match_increment(
 							player_rating,
 							position_rating,
 							diff,
+							player_submissions or 0,
+							position_submissions or 0,
 					)
-					player_rating += to_increment
-					position_rating -= to_increment
+					player_rating += to_increment_player
+					position_rating -= to_increment_position
 
 					result['player_rating'] = player_rating
 
@@ -667,7 +669,7 @@ class Application:
 						(%s, %s, utc_timestamp(), %s, %s, %s, %s, %s)
 					"""
 					params = [gnuid, get_username_to_use(), selected_move,
-							player_rating, position_rating, diff, to_increment]
+							player_rating, position_rating, diff, to_increment_player]
 					rs = conn.execute(sql,  params)
 
 					sql = """
