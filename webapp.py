@@ -1139,11 +1139,13 @@ class Application:
 		from usersposmatchids upm
 		where upm.eqdiff is not null
 		and upm.increment is not null
+		and upm.submittedat >= date_add(utc_timestamp(), interval - %s day)
 		limit 100000
 		'''
 
 # First remove the positions where there is no previous rating.
-		rows = [r for r in cp.thread_data.conn.execute(just_diffs) if r[1] is not None]
+		rows = [r for r in cp.thread_data.conn.execute(just_diffs, 
+										[int(kwargs.get('ld', 5000))]) if r[1] is not None]
 		ratings = [r[1] for r in rows]
 		diffs = [r[0] for r in rows]
 
