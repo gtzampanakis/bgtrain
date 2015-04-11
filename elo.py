@@ -49,8 +49,6 @@ def match_increment(player_rating, position_rating, eq_diff,
 	surplus = p_from_selection - p_from_rating
 	player_result = K(player_submissions) * surplus
 	position_result = - K(position_submissions) * surplus
-	print 'FOOOOOOOOOOOOOOOOOOO', player_submissions, position_submissions
-	print 'FOOOOOOOOOOOOOOOOOOO', player_result, position_result
 	return player_result, position_result
 	
 if __name__ == '__main__':
