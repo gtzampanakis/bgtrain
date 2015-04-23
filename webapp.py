@@ -664,12 +664,13 @@ class Application:
 						insert into
 						usersposmatchids
 						(posmatchid, username, submittedat, move, 
-						ratinguser, ratingpos, eqdiff, increment)
+						ratinguser, ratingpos, eqdiff, increment, plasubms, possubms)
 						values
-						(%s, %s, utc_timestamp(), %s, %s, %s, %s, %s)
+						(%s, %s, utc_timestamp(), %s, %s, %s, %s, %s, %s, %s)
 					"""
 					params = [gnuid, get_username_to_use(), selected_move,
-							player_rating, position_rating, diff, to_increment_player]
+							player_rating, position_rating, diff, to_increment_player,
+							player_submissions or 0., position_submissions or 0.]
 					rs = conn.execute(sql,  params)
 
 					sql = """
