@@ -643,7 +643,7 @@ class Application:
 							position_submissions or 0,
 					)
 					player_rating += to_increment_player
-					position_rating -= to_increment_position
+					position_rating += to_increment_position
 
 					result['player_rating'] = player_rating
 
