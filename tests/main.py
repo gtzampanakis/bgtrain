@@ -1,7 +1,7 @@
 import os, unittest, threading
 import wsgiref.validate
 import wsgiref.simple_server
-import cherrypy, urllib
+import cherrypy, urllib, requests
 import gnubg
 import gnubg.webapp as gw
 import gnubg.common as gc
@@ -76,29 +76,31 @@ class WebAppTests(unittest.TestCase):
 
 	done_serving = False
 
-	def serve(self):
-		while True:
-			if self.done_serving:
-				break
-			self.server.handle_request()
-
-	def setUp(self):
+	@classmethod
+	def setUpClass(cls):
 		app = gw.Application()
 		app = cherrypy.Application(app, '', config = gc.get_config_file_path())
 		app = wsgiref.validate.validator(app)
-		self.server = wsgiref.simple_server.make_server(
+		server = wsgiref.simple_server.make_server(
 										SERVER_HOST, SERVER_PORT, app)
-		self.server_thread = threading.Thread(target = self.serve)
-		self.server_thread.start()
+
+		def serve():
+			while True:
+				if cls.done_serving:
+					break
+				server.handle_request()
+
+		cls.server_thread = threading.Thread(target = serve)
+		cls.server_thread.start()
 
 	def test_access(self):
-		pass
+		out = requests.get(SERVER_URL)
+		self.assertEqual(out.status_code, 200)
 
-	def tearDown(self):
-		self.done_serving = True
-# Following call is just to make self.server.handle_request() return and thus
-# make the serve() function check the done_serving flag and exit.
-		urllib.urlopen(SERVER_URL)
+	@classmethod
+	def tearDownClass(cls):
+		cls.done_serving = True
+		requests.get(SERVER_URL)
 
 
 
