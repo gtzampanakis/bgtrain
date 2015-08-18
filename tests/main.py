@@ -1,10 +1,16 @@
-import os, unittest
-import cherrypy
+import os, unittest, threading
+import wsgiref.validate
+import wsgiref.simple_server
+import cherrypy, urllib
 import gnubg
+import gnubg.webapp as gw
 import gnubg.common as gc
 
 ROOT_DIR = os.path.dirname(__file__)
 
+SERVER_HOST = 'localhost'
+SERVER_PORT = 8080
+SERVER_URL = 'http://' + SERVER_HOST + ':' + str(SERVER_PORT)
 
 class EnvironmentTests(unittest.TestCase):
 
@@ -64,6 +70,36 @@ class PasswordTests(unittest.TestCase):
 	def test_valid_email_address(self):
 		email = 'giorgosfoo.com'
 		self.assertFalse(gc.validate_email_address(email))
+
+
+class WebAppTests(unittest.TestCase):
+
+	done_serving = False
+
+	def serve(self):
+		while True:
+			if self.done_serving:
+				break
+			self.server.handle_request()
+
+	def setUp(self):
+		app = gw.Application()
+		app = cherrypy.Application(app, '', config = gc.get_config_file_path())
+		app = wsgiref.validate.validator(app)
+		self.server = wsgiref.simple_server.make_server(
+										SERVER_HOST, SERVER_PORT, app)
+		self.server_thread = threading.Thread(target = self.serve)
+		self.server_thread.start()
+
+	def test_access(self):
+		pass
+
+	def tearDown(self):
+		self.done_serving = True
+# Following call is just to make self.server.handle_request() return and thus
+# make the serve() function check the done_serving flag and exit.
+		urllib.urlopen(SERVER_URL)
+
 
 
 if __name__ == '__main__':
