@@ -1,15 +1,15 @@
 [db]
-conn.string = r'{"host":"host", "port":3306, "user":"user", "passwd":"passwd", "db":"db", "charset":"utf8"}'
+conn.string = r'{"host":"localhost", "port":3306, "user":"root", "passwd":"root", "db":"bgtrain3", "charset":"utf8"}'
 
 [gnubg]
 program_path = r'C:\Program Files (x86)\gnubg\gnubg-cli.exe'
-commands_path = r''
+commands_path = r'c:\users\giorgos\gnubg\gnubgautorc'
 
 [/]
-tools.staticdir.root = r'C:\Users\Giorgos\pylib\gnubg'
+tools.staticdir.root = r'C:\Users\Giorgos\gnubg'
 tools.sessions.on = True
 tools.sessions.storage_type = "file"
-tools.sessions.storage_path = r"C:\Users\Giorgos\pylib\gnubg\sessions"
+tools.sessions.storage_path = r"C:\Users\Giorgos\gnubg\sessions"
 tools.sessions.timeout = 60
 tools.sessions.timeout = 3000000
 tools.gzip.on = True
