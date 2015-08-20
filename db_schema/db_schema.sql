@@ -1,6 +1,5 @@
 -- MySQL dump 10.13  Distrib 5.5.41, for debian-linux-gnu (x86_64)
 --
--- Host: giorgostzampanakis.mysql.pythonanywhere-services.com    Database: giorgostzampanak$bgtrain
 -- ------------------------------------------------------
 -- Server version	5.1.73-log
 
@@ -130,6 +129,11 @@ CREATE TABLE `stats` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+insert into stats 
+(id, numofpositions, numofsubmissionslast24h)
+values
+(0, 0, 0);
+
 --
 -- Table structure for table `users`
 --
@@ -211,3 +215,4 @@ ADD CONSTRAINT `tagsfk`
   ON UPDATE CASCADE;
 
 alter table posmatchids add (submissions INTEGER);
+

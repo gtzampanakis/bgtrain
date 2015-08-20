@@ -1,4 +1,4 @@
-import os, unittest, threading
+import os, unittest, threading, subprocess, json, tempfile, os
 import wsgiref.validate
 import wsgiref.simple_server
 import cherrypy, urllib, requests
@@ -25,9 +25,6 @@ class EnvironmentTests(unittest.TestCase):
 	def setUp(self):
 		pass
 
-
-
-
 	def test_import_webapp(self):
 		import gnubg.webapp
 
@@ -42,9 +39,6 @@ class EnvironmentTests(unittest.TestCase):
 
 	def test_db_access(self):
 		gc.get_conn()
-
-
-
 
 	def tearDown(self):
 		pass
@@ -71,13 +65,52 @@ class PasswordTests(unittest.TestCase):
 		email = 'giorgosfoo.com'
 		self.assertFalse(gc.validate_email_address(email))
 
+def get_launched_mysql_process():
+	db_parameters = json.loads(gc.get_web_config()['db']['conn.string'])
+
+	process = subprocess.Popen(
+			[
+				'mysql',
+				'--user=' + db_parameters['user'],
+				'--password=' + db_parameters['passwd'],
+				'--force',
+			],
+			stdin = subprocess.PIPE,
+	)
+
+	return process
 
 class WebAppTests(unittest.TestCase):
 
+	DB_NAME = 'BGTRAIN_UNITTEST'
 	done_serving = False
 
 	@classmethod
 	def setUpClass(cls):
+		schema_file_path = os.path.join(os.path.dirname(gnubg.__file__), 
+												'db_schema', 'db_schema.sql')
+
+		process = get_launched_mysql_process()
+
+		process.stdin.write('DROP DATABASE ' + cls.DB_NAME + ';\n')
+		process.stdin.write('CREATE DATABASE ' + cls.DB_NAME + ';\n')
+		process.stdin.write('USE ' + cls.DB_NAME + ';')
+		with open(schema_file_path) as schema_file:
+			while True:
+				to_write = schema_file.read(1024)
+				if not to_write:
+					break
+				process.stdin.write(to_write)
+
+		process.stdin.close()
+		process.wait()
+
+		web_config = gc.get_web_config()
+		db_parameters = json.loads(web_config['db']['conn.string'])
+		db_parameters['db'] = cls.DB_NAME
+		web_config['db']['conn.string'] = json.dumps(db_parameters)
+		os.environ['BGTRAIN_CONNECT_PARAMETERS'] = json.dumps(db_parameters)
+
 		app = gw.Application()
 		app = cherrypy.Application(app, '', config = gc.get_config_file_path())
 		app = wsgiref.validate.validator(app)
@@ -96,6 +129,26 @@ class WebAppTests(unittest.TestCase):
 	def test_access(self):
 		out = requests.get(SERVER_URL)
 		self.assertEqual(out.status_code, 200)
+
+	def test_registration_matching_passwords(self):
+		username = '__test123__'
+		password = '__test123__'
+		out = requests.post(SERVER_URL + '/register', data = {
+			'username' : username,
+			'password' : password,
+			'password_again' : password,
+		})
+		self.assertEqual(out.status_code, 200)
+
+	def test_registration_nonmatching_passwords(self):
+		username = '__test123__'
+		password = '__test123__'
+		out = requests.post(SERVER_URL + '/register', data = {
+			'username' : username,
+			'password' : password,
+			'password_again' : password + ' ',
+		})
+		self.assertNotEqual(out.status_code, 200)
 
 	@classmethod
 	def tearDownClass(cls):
