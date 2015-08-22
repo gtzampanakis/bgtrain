@@ -27,7 +27,11 @@ def get_conn():
 	import cherrypy as cp
 	conn_string = get_web_config().get('db').get('conn.string')
 	LOGGER.info('Loaded conn.string: %s', conn_string)
-	connect_parameters = json.loads(conn_string)
+	connect_parameters = json.loads(
+			os.environ.get('BGTRAIN_CONNECT_PARAMETERS')
+				or
+			conn_string
+	)
 	conn = dbapiutil.connect(
 			lambda: MySQLdb.connect(**connect_parameters)
 	)

@@ -904,6 +904,9 @@ class Application:
 				raise cp.HTTPRedirect('/')
 
 
+		if error_message != '':
+			cp.response.status = 400
+
 		result['error_message'] = error_message
 		result['message'] = message
 
@@ -943,6 +946,9 @@ class Application:
 			cp.thread_data.conn.execute(sql, [gc.get_password_hash(new_password), username])
 			cp.session['username'] = username
 			success_message = 'Your password has been successfully changed.'
+
+		if error_message != '':
+			cp.response.status = 400
 
 		cp.session['success_message'] = success_message
 		cp.session['error_message'] = error_message
