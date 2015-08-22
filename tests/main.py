@@ -139,6 +139,13 @@ class WebAppTests(unittest.TestCase):
 			'password_again' : password,
 		})
 		self.assertEqual(out.status_code, 200)
+		with gc.get_conn() as conn:
+			users_found = conn.execute('''
+				select count(*)
+				from users
+				where username = %s
+			''', [username]).fetchone()[0]
+			self.assertEqual(users_found, 1)
 
 	def test_registration_nonmatching_passwords(self):
 		username = '__test123__'
@@ -153,7 +160,13 @@ class WebAppTests(unittest.TestCase):
 	@classmethod
 	def tearDownClass(cls):
 		cls.done_serving = True
+# A request to cause the done_serving value to be read.
 		requests.get(SERVER_URL)
+
+		process = get_launched_mysql_process()
+		process.stdin.write('DROP DATABASE ' + cls.DB_NAME + ';\n')
+		process.stdin.close()
+		process.wait()
 
 
 
