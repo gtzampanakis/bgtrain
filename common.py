@@ -8,6 +8,10 @@ from passlib.apps import custom_app_context as pwd_context
 
 LOGGER = logging.getLogger()
 
+CHEQUER_DECISION = 'Q'
+DOUBLE_OR_ROLL_DECISION = 'D'
+TAKE_OR_DROP_DECISION = 'T'
+
 def get_config_file_path():
 	config_path = os.environ.get('BGTRAIN_CONFIG_FILE')
 	LOGGER.info('Loaded config_path: %s', config_path)
@@ -80,10 +84,44 @@ def validate_email_address(s):
 				return True
 	return False
 
-def should_gnuid_be_filtered(gnuid):
+def is_bearoff(matchid):
+	points = gg.position_id_to_points(matchid)[25:]
+	if sum(points[6:]) == 0:
+		return True
+
+def is_bearoffopp(matchid):
+	points = gg.position_id_to_points(matchid)[:25]
+	if sum(points[6:]) == 0:
+		return True
+
+def points_to_most_backward(points):
+	for pointi in  xrange(24, -1, -1):
+		if points[pointi] != 0:
+			return pointi
+
+def is_nocontact_strict(matchid):
+	points = gg.position_id_to_points(matchid)
+	player1points = points[25:]
+	player2points = points[:25]
+	player1mostbackward = points_to_most_backward(player1points)
+	player2mostbackward = points_to_most_backward(player2points)
+	if player1mostbackward + player2mostbackward <= 22:
+		return True
+
+
+def is_nocontact(matchid):
+	if is_bearoff(matchid) or is_bearoffopp(matchid):
+		return False
+	return is_nocontact_strict(matchid)
+
+def should_gnuid_be_filtered(gnuid, decision_type):
 	return (
 			gnuid.startswith('4HPwATDgc/ABMA')
-			or
+				or
+# Maybe we should keep cases where the roll does not allow both checkers to be
+# taken off, but I really don't think it is worth the effort.
+			( decision_type == CHEQUER_DECISION and is_bearoff(gnuid) and is_nocontact_strict(gnuid) )
+				or
 			gg.position_id_to_max_pips(gnuid.split(':')[0]) >= c.PIPS_THRESHOLD
 	)
 

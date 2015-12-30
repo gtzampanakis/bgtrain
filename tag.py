@@ -19,18 +19,9 @@ def is_midgame(matchid):
 	if all(100 < pips < 120 for pips in pips_pair):
 		return True
 
-def is_bearoff(matchid):
-	points = gamerep.position_id_to_points(matchid)[25:]
-	if sum(points[6:]) == 0:
-		return True
-
-def is_bearoffopp(matchid):
-	points = gamerep.position_id_to_points(matchid)[:25]
-	if sum(points[6:]) == 0:
-		return True
 
 def is_backgame(matchid):
-	if is_nocontact(matchid):
+	if gc.is_nocontact(matchid):
 		return False
 	points = gamerep.position_id_to_points(matchid)[25:]
 	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
@@ -40,7 +31,7 @@ def is_backgame(matchid):
 		return True
 
 def is_backgameopp(matchid):
-	if is_nocontact(matchid):
+	if gc.is_nocontact(matchid):
 		return False
 	points = gamerep.position_id_to_points(matchid)[:25]
 	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
@@ -50,7 +41,7 @@ def is_backgameopp(matchid):
 		return True
 
 def is_holding(matchid):
-	if is_nocontact(matchid):
+	if gc.is_nocontact(matchid):
 		return False
 	points = gamerep.position_id_to_points(matchid)[25:]
 	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
@@ -60,7 +51,7 @@ def is_holding(matchid):
 		return True
 
 def is_holdingopp(matchid):
-	if is_nocontact(matchid):
+	if gc.is_nocontact(matchid):
 		return False
 	points = gamerep.position_id_to_points(matchid)[:25]
 	opp_pips, player_pips = gamerep.position_id_to_pips(matchid)
@@ -69,22 +60,6 @@ def is_holdingopp(matchid):
 							and opp_pips - player_pips >= 55):
 		return True
 
-def points_to_most_backward(points):
-	for pointi in  xrange(24, -1, -1):
-		if points[pointi] != 0:
-			return pointi
-
-
-def is_nocontact(matchid):
-	if is_bearoff(matchid) or is_bearoffopp(matchid):
-		return False
-	points = gamerep.position_id_to_points(matchid)
-	player1points = points[25:]
-	player2points = points[:25]
-	player1mostbackward = points_to_most_backward(player1points)
-	player2mostbackward = points_to_most_backward(player2points)
-	if player1mostbackward + player2mostbackward <= 22:
-		return True
 
 
 if __name__ == '__main__':

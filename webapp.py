@@ -381,29 +381,29 @@ class Application:
 			constraint = cp.request.cookie.get('dectype')
 			if constraint and constraint.value == 'checker':
 				allowed = [
-							gnubggen.CHEQUER_DECISION
+							gc.CHEQUER_DECISION
 				]
 			elif constraint and constraint.value == 'cube':
 				allowed = [
-							gnubggen.TAKE_OR_DROP_DECISION, 
-							gnubggen.DOUBLE_OR_ROLL_DECISION
+							gc.TAKE_OR_DROP_DECISION, 
+							gc.DOUBLE_OR_ROLL_DECISION
 				]
 			else:
 				allowed = [
-							gnubggen.CHEQUER_DECISION,
-							gnubggen.TAKE_OR_DROP_DECISION,
-							gnubggen.DOUBLE_OR_ROLL_DECISION
+							gc.CHEQUER_DECISION,
+							gc.TAKE_OR_DROP_DECISION,
+							gc.DOUBLE_OR_ROLL_DECISION
 				]
 
 			decision_type = None
 			while decision_type not in allowed:
 				r = random.random()
 				if r < conf.CHEQUER_DECISION_PORTION:
-					decision_type = gnubggen.CHEQUER_DECISION
+					decision_type = gc.CHEQUER_DECISION
 				elif r < conf.CHEQUER_DECISION_PORTION + conf.TAKE_OR_DROP_DECISION_PORTION:
-					decision_type = gnubggen.TAKE_OR_DROP_DECISION
+					decision_type = gc.TAKE_OR_DROP_DECISION
 				else:
-					decision_type = gnubggen.DOUBLE_OR_ROLL_DECISION
+					decision_type = gc.DOUBLE_OR_ROLL_DECISION
 
 			conn = cp.thread_data.conn
 
@@ -511,26 +511,26 @@ class Application:
 				current_ply = row[2]
 				current_reference_equity = row[1]
 			decision_type = row[3]
-			assert (decision_type == gnubggen.TAKE_OR_DROP_DECISION and selected_move in ('take', 'drop')
+			assert (decision_type == gc.TAKE_OR_DROP_DECISION and selected_move in ('take', 'drop')
 					or
-					decision_type == gnubggen.DOUBLE_OR_ROLL_DECISION and selected_move in ('double', 'roll')
+					decision_type == gc.DOUBLE_OR_ROLL_DECISION and selected_move in ('double', 'roll')
 					or
-					decision_type == gnubggen.CHEQUER_DECISION)
+					decision_type == gc.CHEQUER_DECISION)
 			to_append = {
 					'move': row[0], 
-					'equity': -row[1] if decision_type == gnubggen.TAKE_OR_DROP_DECISION else row[1], 
+					'equity': -row[1] if decision_type == gc.TAKE_OR_DROP_DECISION else row[1], 
 					'ply': current_ply,
 					'diff': -(rs[0][1] - row[1]),
 					'diff_show': -((current_reference_equity if current_reference_equity is not None and 
-												decision_type == gnubggen.CHEQUER_DECISION else rs[0][1]) - row[1]),
+												decision_type == gc.CHEQUER_DECISION else rs[0][1]) - row[1]),
 			}
 			to_append['diff_show'] = to_append['diff_show'] if to_append['diff_show'] != 0 else None
 			if row[0] == selected_move:
 				to_append['highlight'] = highlight_move and True
-			if not (decision_type == gnubggen.TAKE_OR_DROP_DECISION and row[0] == 'No double'):
+			if not (decision_type == gc.TAKE_OR_DROP_DECISION and row[0] == 'No double'):
 				moves.append(to_append)
 
-		if decision_type == gnubggen.DOUBLE_OR_ROLL_DECISION:
+		if decision_type == gc.DOUBLE_OR_ROLL_DECISION:
 			equities = { }
 			for row in rs:
 				equities[row[0]] = row[1]
@@ -554,7 +554,7 @@ class Application:
 				if move['move'] != ignore_key and move['move'] != best_key:
 					move['diff'] = move['equity'] - best_equity
 
-		elif decision_type == gnubggen.TAKE_OR_DROP_DECISION:
+		elif decision_type == gc.TAKE_OR_DROP_DECISION:
 			for move in moves:
 				if move['move'] == 'Double, pass':
 					move['move'] = 'Drop'
@@ -576,7 +576,7 @@ class Application:
 				else:
 					move['diff'] = move['equity'] - best_equity
 
-		if decision_type in (gnubggen.DOUBLE_OR_ROLL_DECISION, gnubggen.TAKE_OR_DROP_DECISION):
+		if decision_type in (gc.DOUBLE_OR_ROLL_DECISION, gc.TAKE_OR_DROP_DECISION):
 			for move in moves:
 				move['diff_show'] = move['diff'] if move['diff'] != 0 else None
 
@@ -608,7 +608,7 @@ class Application:
 						selection_ply = move['ply']
 
 				if diff is not None:
-					if decision_type == gnubggen.CHEQUER_DECISION and selection_ply is not None:
+					if decision_type == gc.CHEQUER_DECISION and selection_ply is not None:
 
 						min_rawequity_of_previous_ply = None
 						ply_to_eq_diff = { }

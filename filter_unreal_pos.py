@@ -12,10 +12,11 @@ def find_threshold():
 
 def main():
 	with gc.get_conn() as conn:
-		posmatchid_iter = conn.execute('select posmatchid from posmatchids')
-		for row in posmatchid_iter:
+		it = conn.execute('select posmatchid, decisiontype from posmatchids')
+		for row in it:
 			gnuid = row[0]
-			if gc.should_gnuid_be_filtered(gnuid):
+			decision_type = row[1]
+			if gc.should_gnuid_be_filtered(gnuid, decision_type):
 				print 'Deleting gnuid:', gnuid
 				conn.execute('delete from posmatchids where posmatchid = %s', [gnuid])
 				conn.commit()

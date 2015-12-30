@@ -13,10 +13,6 @@ COMMANDS_PATH = gc.get_web_config().get('gnubg').get('commands_path')
 SAVE_PATH = os.path.join(ROOT_DIR, 'matches')
 WORK_SUFFIX = '.work'
 
-CHEQUER_DECISION = 'Q'
-DOUBLE_OR_ROLL_DECISION = 'D'
-TAKE_OR_DROP_DECISION = 'T'
-
 TEXT_BUFFER_SIZE = 200
 
 def scan(pairs, text, *args):
@@ -50,13 +46,13 @@ def move_handler(mo, *args):
 
 	if 'double' in mo.group().lower():
 		if gamerep.is_cube_being_offered(analyzed.match_id):
-			analyzed.type = TAKE_OR_DROP_DECISION
+			analyzed.type = gc.TAKE_OR_DROP_DECISION
 		else:
-			analyzed.type = DOUBLE_OR_ROLL_DECISION
+			analyzed.type = gc.DOUBLE_OR_ROLL_DECISION
 	else:
-		analyzed.type = CHEQUER_DECISION
+		analyzed.type = gc.CHEQUER_DECISION
 
-	if analyzed.type == CHEQUER_DECISION:
+	if analyzed.type == gc.CHEQUER_DECISION:
 		analyzed.ply = int(mo.group('PLY'))
 
 	store(analyzed)
@@ -111,10 +107,10 @@ def store(analyzed):
 # Delete is not needed since we store all possible moves, and those will be the
 # same no matter what the configuration of GNUBG.
 		match_id = (analyzed.match_id
-				if analyzed.type != DOUBLE_OR_ROLL_DECISION
+				if analyzed.type != gc.DOUBLE_OR_ROLL_DECISION
 				else gamerep.set_dice_to_zero(analyzed.match_id))
 		posmatchid = analyzed.position_id + ':' + match_id
-		if not gc.should_gnuid_be_filtered(posmatchid):
+		if not gc.should_gnuid_be_filtered(posmatchid, decision_type):
 			analyzed.posmatchid = posmatchid
 			stored.append(copy.copy(analyzed))
 
@@ -163,7 +159,6 @@ def write_to_csv():
 
 if __name__ == '__main__':
 	import argparse
-	#logging.basicConfig(level = logging.DEBUG)
 	parser = argparse.ArgumentParser()
 	parser.add_argument('minutes', help = 'Number of minutes to work for', type = float)
 	parser.add_argument('version', help = 'Analysis version to store', type = int)
