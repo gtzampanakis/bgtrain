@@ -68,45 +68,5 @@
 	%>
 </form>
 
-<form class="change_details" method="post" action="/changeemail">
-	<h3>Change email</h3>
-	<p>Providing an email address will enable you to reset your password if you
-		forget it.
-	</p>
-	<table class="change_details_table">
-		<tr>
-			<td class="change_details_description">Current password: </td>
-			<td><input type="password" name="current_password"
-				% if cp.session.get('success_message', '') == '':
-					value=""
-				% endif
-				
-				></td>
-		</tr>
-		<tr>
-			<td>Current email:</td>
-			<td class="current_email_value">${current_email or '(Not set)'|h}</td>
-		</tr>
-		<tr>
-			<td>New email: </td>
-			<td><input type="text" name="new_email"
-				% if cp.session.get('success_message', '') == '':
-					value=""
-				% endif
-				
-				></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input type="submit" value="Submit"></td>
-		</tr>
-	</table>
-	<span id="error_message">${cp.session.get('email_error_message', '')|h}</span>
-	<span id="success_message">${cp.session.get('email_success_message', '')|h}</span>
-	<% 
-		cp.session['email_error_message'] = ''
-		cp.session['email_success_message'] = ''
-	%>
-</form>
 </%block>
 
