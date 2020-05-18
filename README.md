@@ -1,4 +1,4 @@
 # gnubg
 Backgammon position database --- backgammon training web application.
 
-Running at http://www.bgtrain.com/ .
+Running at https://www.bgtrain.com/ .
