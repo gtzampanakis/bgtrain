@@ -920,6 +920,7 @@ class Application:
 	@webutil.template('cpanel.html')
 	def changepass(self, *args, **kwargs):
 
+		username = cp.session['username']
 		current_password = kwargs.get('current_password', '')
 		new_password = kwargs.get('new_password', '')
 		new_password_again = kwargs.get('new_password_again', '')
