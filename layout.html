@@ -187,15 +187,6 @@
 				
 
 				<%block name="numberofpositions">
-				% if cp.session.get('username') is not None and webapp.get_logged_in_user_email() is None:
-				<span class="footer existing_user_email_suggest">
-					Please consider 
-					<a href="/cpanel">setting an email address</a>
-					as it will allow you to reset your password
-					should you forget it.
-				</span>
-				<hr>
-				% endif
 				<span class="footer">
 					All design and code by <span class="author_name">Giorgos Tzampanakis</span>: 
 					<a href="/static/cacheable/CV.Giorgos.Tzampanakis.pdf">CV</a>,
