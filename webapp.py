@@ -1,4 +1,14 @@
-import logging, os, urllib, random, numpy, collections, itertools, time
+import cProfile
+import datetime
+import functools
+import logging
+import os
+import urllib
+import random
+import collections
+import itertools
+import time
+
 import cherrypy as cp
 import mako.template as mt
 import mako.lookup as ml
@@ -24,6 +34,36 @@ DEFAULT_PREFERENCES = dict(
 		plr_checker = 'white_checker.png',
 		oppt_checker = 'red_checker.png',
 )
+
+
+def profile_function_to_file(path, filename_prefix, prob):
+    def argless_decorator(f):
+        @functools.wraps(f)
+        def f_to_be_returned(*args, **kwargs):
+            if random.random() < prob:
+                pr = cProfile.Profile()
+                pr.enable()
+                t0 = time.time()
+                return_value = f(*args, **kwargs)
+                t1 = time.time()
+                pr.disable()
+                save_path = (
+                    path
+                        + '/'
+                        + filename_prefix
+                        + '.'
+                        + ('%.3f' % (t1-t0))
+                        + '.'
+                        + datetime.datetime.now().isoformat().replace(':', '.')
+                        + '.prof'
+                )
+                pr.dump_stats(save_path)
+                return return_value
+            else:
+                return f(*args, **kwargs)
+        return f_to_be_returned
+    return argless_decorator
+
 
 def get_preferences():
 
@@ -364,6 +404,7 @@ class Application:
 		return { }
 
 	@cp.expose
+	@profile_function_to_file('/home/giorgostzampanakis', 'prof', .05)
 	@log_call
 	@html
 	@db
