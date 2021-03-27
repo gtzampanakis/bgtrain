@@ -37,32 +37,32 @@ DEFAULT_PREFERENCES = dict(
 
 
 def profile_function_to_file(path, filename_prefix, prob):
-    def argless_decorator(f):
-        @functools.wraps(f)
-        def f_to_be_returned(*args, **kwargs):
-            if random.random() < prob:
-                pr = cProfile.Profile()
-                pr.enable()
-                t0 = time.time()
-                return_value = f(*args, **kwargs)
-                t1 = time.time()
-                pr.disable()
-                save_path = (
-                    path
-                        + '/'
-                        + filename_prefix
-                        + '.'
-                        + ('%.3f' % (t1-t0))
-                        + '.'
-                        + datetime.datetime.now().isoformat().replace(':', '.')
-                        + '.prof'
-                )
-                pr.dump_stats(save_path)
-                return return_value
-            else:
-                return f(*args, **kwargs)
-        return f_to_be_returned
-    return argless_decorator
+	def argless_decorator(f):
+		@functools.wraps(f)
+		def f_to_be_returned(*args, **kwargs):
+			if random.random() < prob:
+				pr = cProfile.Profile()
+				pr.enable()
+				t0 = time.time()
+				return_value = f(*args, **kwargs)
+				t1 = time.time()
+				pr.disable()
+				save_path = (
+					path
+						+ '/'
+						+ filename_prefix
+						+ '.'
+						+ ('%.3f' % (t1-t0))
+						+ '.'
+						+ datetime.datetime.now().isoformat().replace(':', '.')
+						+ '.prof'
+				)
+				pr.dump_stats(save_path)
+				return return_value
+			else:
+				return f(*args, **kwargs)
+		return f_to_be_returned
+	return argless_decorator
 
 
 def get_preferences():
