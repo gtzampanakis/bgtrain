@@ -1,8 +1,8 @@
 <%!
-	import gnubg.webapp as webapp
-	import gnubg.config as conf
-	import gnubg.common
-	import gnubg.webutil as webutil
+    import gnubg.webapp as webapp
+    import gnubg.config as conf
+    import gnubg.common
+    import gnubg.webutil as webutil
 %>
 <%namespace name="lib" file="lib.html"/>
 
@@ -10,88 +10,88 @@
 
 <div id="leaderboard_container">
 <table id="leaderboard" class="number_list alternate_row_colors">
-	<tr><th colspan="4">Leaderboard</th></tr>
-	<tr>
-		<th></th>
-		<th>User</th>
-		<th>Rating</th>
-		<th>Pld</th>
-	</tr>
-	<%
+    <tr><th colspan="4">Leaderboard</th></tr>
+    <tr>
+        <th></th>
+        <th>User</th>
+        <th>Rating</th>
+        <th>Pld</th>
+    </tr>
+    <%
 
-		limit = conf.LEADERBOARD_ROWS
-		
+        limit = conf.LEADERBOARD_ROWS
+        
 
-		page = context.get('page', 1)
-		if not center_current_user:
-			offset = (page - 1) * conf.LEADERBOARD_ROWS
-		else:
-			rank = webapp.get_user_rank()
-			if rank is not None:
-				low_limit, high_limit = gnubg.common.normalize_limits(rank, conf.LEADERBOARD_ROWS / 2, webapp.get_leaderboard(0, 1)['count'])
-				offset = low_limit - 1
-			else:
-				offset = 0
+        page = context.get('page', 1)
+        if not center_current_user:
+            offset = (page - 1) * conf.LEADERBOARD_ROWS
+        else:
+            rank = webapp.get_user_rank()
+            if rank is not None:
+                low_limit, high_limit = gnubg.common.normalize_limits(rank, conf.LEADERBOARD_ROWS / 2, webapp.get_leaderboard(0, 1)['count'])
+                offset = low_limit - 1
+            else:
+                offset = 0
 
-		result = webapp.get_leaderboard(
-			offset = offset,
-			limit = limit,
-		)
-		rows = result['rows']
-		count = result['count']
+        result = webapp.get_leaderboard(
+            offset = offset,
+            limit = limit,
+        )
+        rows = result['rows']
+        count = result['count']
 
-		reference_rating = None
-		user_rowi = None
+        reference_rating = None
+        user_rowi = None
 
-		if show_diff:
-			for leader_rowi, leader_row in enumerate(rows, offset + 1):
-				if leader_row[0] == webapp.get_logged_in_username() or leader_rowi == offset + 1:
-					reference_rating = leader_row[1]
-					user_rowi = leader_rowi
-			
+        if show_diff:
+            for leader_rowi, leader_row in enumerate(rows, offset + 1):
+                if leader_row[0] == webapp.get_logged_in_username() or leader_rowi == offset + 1:
+                    reference_rating = leader_row[1]
+                    user_rowi = leader_rowi
+            
 
-	%>
-		% for leader_rowi, leader_row in enumerate(rows, offset + 1):
-			<%
-				if reference_rating is not None and leader_rowi != user_rowi:
-					rating_cell_content = '%+.2f' % (leader_row[1] - reference_rating)
-				else:
-					rating_cell_content = '%.2f' % leader_row[1]
-			%>
-		<tr 
-				% if leader_row[0] == webapp.get_logged_in_username():
-				class="users_leader_row"
-				% endif
-			>
+    %>
+        % for leader_rowi, leader_row in enumerate(rows, offset + 1):
+            <%
+                if reference_rating is not None and leader_rowi != user_rowi:
+                    rating_cell_content = '%+.2f' % (leader_row[1] - reference_rating)
+                else:
+                    rating_cell_content = '%.2f' % leader_row[1]
+            %>
+        <tr 
+                % if leader_row[0] == webapp.get_logged_in_username():
+                class="users_leader_row"
+                % endif
+            >
 
-			<td>
-					${leader_rowi|h}
-			</td>
-			<td>
-				<div title="${leader_row[0]|h}">
-				${webutil.truncate_string(leader_row[0], max_username_length)|h}
-				</div>
-			</td>
-			<td>
-				${rating_cell_content|h}
-			</td>
-			<td>
-				${leader_row[2]|h}
-			</td>
-		</tr>
-		% endfor
+            <td>
+                    ${leader_rowi|h}
+            </td>
+            <td>
+                <div title="${leader_row[0]|h}">
+                ${webutil.truncate_string(leader_row[0], max_username_length)|h}
+                </div>
+            </td>
+            <td>
+                ${rating_cell_content|h}
+            </td>
+            <td>
+                ${leader_row[2]|h}
+            </td>
+        </tr>
+        % endfor
 </table>
 
-		% if show_page_control:
-		${
-			lib.page_control(
-				page,
-				3,
-				count,
-				conf.LEADERBOARD_ROWS,
-			)
-		}
-		% endif
+        % if show_page_control:
+        ${
+            lib.page_control(
+                page,
+                3,
+                count,
+                conf.LEADERBOARD_ROWS,
+            )
+        }
+        % endif
 </div>
 
 </%def>

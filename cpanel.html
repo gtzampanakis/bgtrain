@@ -1,22 +1,22 @@
 <%inherit file="layout.html"/>
 
 <%!
-	import cherrypy as cp
-	import gnubg.webapp as webapp
+    import cherrypy as cp
+    import gnubg.webapp as webapp
 %>
 
 <%block name="head">
-	<style type="text/css">
-		form td:nth-child(2) {
-			text-align: right;
-		}
-		#error_message {
-			color: red;
-		}
-		#success_message {
-			color: green;
-		}
-	</style>
+    <style type="text/css">
+        form td:nth-child(2) {
+            text-align: right;
+        }
+        #error_message {
+            color: red;
+        }
+        #success_message {
+            color: green;
+        }
+    </style>
 </%block> ## End of head
 
 <%block name="left_content">
@@ -26,46 +26,46 @@
 <h2>Control panel for <em>${webapp.get_logged_in_username()|h}</em></h2>
 <hr>
 <form class="change_details" method="post" action="/changepass">
-	<h3>Change password</h3>
-	<table class="change_details_table">
-		<tr>
-			<td class="change_details_description">Current password: </td>
-			<td><input type="password" name="current_password"
-				% if cp.session.get('success_message', '') == '':
-					value=""
-				% endif
-				
-				></td>
-		</tr>
-		<tr>
-			<td>New password: </td>
-			<td><input type="password" name="new_password"
-				% if cp.session.get('success_message', '') == '':
-					value=""
-				% endif
-				
-				></td>
-		</tr>
-		<tr>
-			<td>New password again: </td>
-			<td><input type="password" name="new_password_again"
-				% if cp.session.get('success_message', '') == '':
-					value=""
-				% endif
-				
-				></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input type="submit" value="Submit"></td>
-		</tr>
-	</table>
-	<span id="error_message">${cp.session.get('error_message', '')|h}</span>
-	<span id="success_message">${cp.session.get('success_message', '')|h}</span>
-	<% 
-		cp.session['error_message'] = ''
-		cp.session['success_message'] = ''
-	%>
+    <h3>Change password</h3>
+    <table class="change_details_table">
+        <tr>
+            <td class="change_details_description">Current password: </td>
+            <td><input type="password" name="current_password"
+                % if cp.session.get('success_message', '') == '':
+                    value=""
+                % endif
+                
+                ></td>
+        </tr>
+        <tr>
+            <td>New password: </td>
+            <td><input type="password" name="new_password"
+                % if cp.session.get('success_message', '') == '':
+                    value=""
+                % endif
+                
+                ></td>
+        </tr>
+        <tr>
+            <td>New password again: </td>
+            <td><input type="password" name="new_password_again"
+                % if cp.session.get('success_message', '') == '':
+                    value=""
+                % endif
+                
+                ></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="Submit"></td>
+        </tr>
+    </table>
+    <span id="error_message">${cp.session.get('error_message', '')|h}</span>
+    <span id="success_message">${cp.session.get('success_message', '')|h}</span>
+    <% 
+        cp.session['error_message'] = ''
+        cp.session['success_message'] = ''
+    %>
 </form>
 
 </%block>

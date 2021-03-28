@@ -2,62 +2,62 @@
 <%namespace name="lib" file="lib.html"/>
 
 <%!
-	import cherrypy as cp
-	import gnubg.config as conf
-	import gnubg.webapp as webapp
+    import cherrypy as cp
+    import gnubg.config as conf
+    import gnubg.webapp as webapp
 %>
 
 <%block name="head">
 
-	<script 
-		type="text/javascript" 
-		src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.1/jquery.flot.min.js"
-	></script>
-	<script 
-		type="text/javascript" 
-		src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.1/jquery.flot.time.min.js"
-	></script>
+    <script 
+        type="text/javascript" 
+        src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.1/jquery.flot.min.js"
+    ></script>
+    <script 
+        type="text/javascript" 
+        src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.1/jquery.flot.time.min.js"
+    ></script>
 
-	<style type="text/css">
+    <style type="text/css">
 
-		div#plot {
-			width: 320px;
-			height: 320px;
-		}
+        div#plot {
+            width: 320px;
+            height: 320px;
+        }
 
-	</style>
+    </style>
 
-	<script type="text/javascript">
+    <script type="text/javascript">
 
 
-		$(document).ready(function() {
-			var plotData = ${data};
+        $(document).ready(function() {
+            var plotData = ${data};
 
-			var plot = $.plot(
-				$('div#plot')
-				,[ plotData ]
-				,{ 
-					xaxis: {
-					   mode: 'time'
-					   ,timezone: 'browser'
-					}
-					,series: {
-						color: 'green'
-					}
-				}
-			);
-		});
+            var plot = $.plot(
+                $('div#plot')
+                ,[ plotData ]
+                ,{ 
+                    xaxis: {
+                       mode: 'time'
+                       ,timezone: 'browser'
+                    }
+                    ,series: {
+                        color: 'green'
+                    }
+                }
+            );
+        });
 
-	</script>
+    </script>
 
 
 </%block>
 
 <%block name="mid_content">
 
-	<h2>Rating history for user <em>${webapp.get_username_to_use_short() | h}</em></h2>
-	<div id="plot">
-	</div>
+    <h2>Rating history for user <em>${webapp.get_username_to_use_short() | h}</em></h2>
+    <div id="plot">
+    </div>
 
 </%block>
 

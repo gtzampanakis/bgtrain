@@ -2,70 +2,70 @@
 <%namespace name="lib" file="lib.html"/>
 
 <%!
-	import os, glob
-	import cherrypy as cp
-	import gnubg.config as conf
-	import gnubg.webapp as webapp
+    import os, glob
+    import cherrypy as cp
+    import gnubg.config as conf
+    import gnubg.webapp as webapp
 %>
 
 <%block name="head">
 
-	<style type="text/css">
+    <style type="text/css">
 
 
-	</style>
+    </style>
 
-	<script type="text/javascript">
+    <script type="text/javascript">
 
 
-		$(document).ready(function() {
+        $(document).ready(function() {
 
-				$('table.checker_color_setup input').change(function() {
-					$('span.success').empty();
-				});
+                $('table.checker_color_setup input').change(function() {
+                    $('span.success').empty();
+                });
 
-		});
+        });
 
-	</script>
+    </script>
 
 
 </%block>
 
 <%block name="mid_content">
 
-	<h2>Preferences for user <em>${webapp.get_username_to_use_short() | h}</em></h2>
+    <h2>Preferences for user <em>${webapp.get_username_to_use_short() | h}</em></h2>
 
-	<form action="" method="post">
-		
-		<h3>Checker color</h3>
-		<table class="checker_color_setup">
-		<tr>
-			<th>Player Checker</th>
-			<th>Oppt Checker</th>
-		</tr>
-		% for path in sorted(glob.glob(os.path.join(webapp.ROOT_DIR, 'static', 'cacheable', 'checkers', '*'))):
-		<tr>
-			% for playeri, player in enumerate(['plr', 'oppt']):
-			<%
-				prefs = webapp.get_preferences()
-				basename = os.path.basename(path)
-			%>
-			<td>
-				<label>
-					<img src="/static/cacheable/checkers/${basename | u,h}">
-					<input ${'checked' if basename == prefs.get(player + '_checker') else ''}
-						type="radio" name="${player}_checker" value="${basename | h}">
-				</label>
-			</td>
-			% endfor
-		</tr>
-		% endfor
-		</table>
+    <form action="" method="post">
+        
+        <h3>Checker color</h3>
+        <table class="checker_color_setup">
+        <tr>
+            <th>Player Checker</th>
+            <th>Oppt Checker</th>
+        </tr>
+        % for path in sorted(glob.glob(os.path.join(webapp.ROOT_DIR, 'static', 'cacheable', 'checkers', '*'))):
+        <tr>
+            % for playeri, player in enumerate(['plr', 'oppt']):
+            <%
+                prefs = webapp.get_preferences()
+                basename = os.path.basename(path)
+            %>
+            <td>
+                <label>
+                    <img src="/static/cacheable/checkers/${basename | u,h}">
+                    <input ${'checked' if basename == prefs.get(player + '_checker') else ''}
+                        type="radio" name="${player}_checker" value="${basename | h}">
+                </label>
+            </td>
+            % endfor
+        </tr>
+        % endfor
+        </table>
 
-		<p><input type="submit" value="Save">
-		<span class="success">&nbsp;${success| h}</span>
+        <p><input type="submit" value="Save">
+        <span class="success">&nbsp;${success| h}</span>
 
-		</form>
+        </form>
 
 </%block>
 

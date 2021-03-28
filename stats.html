@@ -1,16 +1,16 @@
 <%inherit file="layout.html"/>
 
 <%!
-	import cherrypy as cp
+    import cherrypy as cp
 %>
 
 <%block name="head">
 
-	<style type="text/css">
-	</style>
+    <style type="text/css">
+    </style>
 
-	<script type="text/javascript">
-	</script>
+    <script type="text/javascript">
+    </script>
 
 
 </%block>
@@ -18,13 +18,13 @@
 <%block name="mid_content">
 <table border=1>
 % for quint in sorted(mean_rating_of_quintile_to_figs.keys()):
-	<% fig_obj = mean_rating_of_quintile_to_figs[quint] %>
-	<tr><td>mean rdiff of quintile</td><td>${'%.2f' % quint}</td>
-	<tr><td>n</td><td>${fig_obj['n']}</td>
-	<tr><td>mean</td><td>${'%.3f' % fig_obj['mean']}</td>
-	<tr><td>SE</td><td>${'%.3f' % (fig_obj['std'] / fig_obj['n']**.5)}</td>
-	<tr><td>quartiles</td><td>${', '.join('%.3f' % el for el in fig_obj['quartiles'])}</td></tr>
-	<tr><td colspan=2><hr></td></tr>
+    <% fig_obj = mean_rating_of_quintile_to_figs[quint] %>
+    <tr><td>mean rdiff of quintile</td><td>${'%.2f' % quint}</td>
+    <tr><td>n</td><td>${fig_obj['n']}</td>
+    <tr><td>mean</td><td>${'%.3f' % fig_obj['mean']}</td>
+    <tr><td>SE</td><td>${'%.3f' % (fig_obj['std'] / fig_obj['n']**.5)}</td>
+    <tr><td>quartiles</td><td>${', '.join('%.3f' % el for el in fig_obj['quartiles'])}</td></tr>
+    <tr><td colspan=2><hr></td></tr>
 % endfor
 </table>
 </%block>

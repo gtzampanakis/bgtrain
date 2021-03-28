@@ -1,32 +1,32 @@
 <%inherit file="layout.html"/>
 
 <%!
-	import cherrypy as cp
+    import cherrypy as cp
 %>
 
 <%block name="head">
 
-	<style type="text/css">
+    <style type="text/css">
 
-		#faq_wrapper li {
-			font-weight: bolder;
-		}
-		li p {
-			font-weight: normal;
-		}
-		#faq_wrapper {
-			width: 45em;
-		}
+        #faq_wrapper li {
+            font-weight: bolder;
+        }
+        li p {
+            font-weight: normal;
+        }
+        #faq_wrapper {
+            width: 45em;
+        }
 
-	</style>
+    </style>
 
-	<script type="text/javascript">
+    <script type="text/javascript">
 
-		$(document).ready(function(){
+        $(document).ready(function(){
 
-		});
+        });
 
-	</script>
+    </script>
 
 
 </%block>
@@ -39,98 +39,98 @@
 
 <ul>
 
-	<li>
-	What is the purpose of the site?
-	<p>
-	To provide a quick and effective way to train backgammon
-	play. In our opinion, the only way towards stronger
-	backgammon play is evaluating one's move selections against computer
-	analysis.
-	</li>
+    <li>
+    What is the purpose of the site?
+    <p>
+    To provide a quick and effective way to train backgammon
+    play. In our opinion, the only way towards stronger
+    backgammon play is evaluating one's move selections against computer
+    analysis.
+    </li>
 
-	<li>
-	Is computer analysis so important for improving at backgammon?
-	<p>
-	Use of dice in backgammon makes it very difficult,
-	if not impossible, to tell whether a loss was caused by bad play or
-	merely by bad luck, unless a computer is employed for analysis.
-	This makes computer analysis much more vital in backgammon than
-	in other board games, like chess.
-	</li>
+    <li>
+    Is computer analysis so important for improving at backgammon?
+    <p>
+    Use of dice in backgammon makes it very difficult,
+    if not impossible, to tell whether a loss was caused by bad play or
+    merely by bad luck, unless a computer is employed for analysis.
+    This makes computer analysis much more vital in backgammon than
+    in other board games, like chess.
+    </li>
 
-	<li>
-	But I've heard that great players can judge a position without the help
-	of computers.
-	<p>
-	<a href="http://www.bkgm.com/books/Magriel-Backgammon.html"><i>Paul Magriel's Backgammon</i></a> 
-	is considered the bible of the game
-	and still, there are many positions for which the book-provided analysis
-	is now seen as wrong, and this is solely because of computer analysis. 
-	Even <a href="http://www.bkgm.com/openings.html">the ways opening rolls are played</a>
-	have changed significantly because of 
-	computer analysis; for example, it was only after computer analysis that
-	it was discovered that playing the opening 6-4 as 8/2 6/2 is very likely
-	the best play. Before computer analysis this play was dismissed by most experts.
-	</li>
+    <li>
+    But I've heard that great players can judge a position without the help
+    of computers.
+    <p>
+    <a href="http://www.bkgm.com/books/Magriel-Backgammon.html"><i>Paul Magriel's Backgammon</i></a> 
+    is considered the bible of the game
+    and still, there are many positions for which the book-provided analysis
+    is now seen as wrong, and this is solely because of computer analysis. 
+    Even <a href="http://www.bkgm.com/openings.html">the ways opening rolls are played</a>
+    have changed significantly because of 
+    computer analysis; for example, it was only after computer analysis that
+    it was discovered that playing the opening 6-4 as 8/2 6/2 is very likely
+    the best play. Before computer analysis this play was dismissed by most experts.
+    </li>
 
-	<li>
-	Okay, I am sold. How do I actually use the site for training?
-	<p>
-	It is highly beneficial to <a href="/register">register</a> first so the system
-	can track your rating. However, registration is not mandatory. Then, just navigate
-	to the <a href="/">home page</a> and start playing positions. After each submission,
-	you will get the list of best moves, as evaluated by the computer, together with
-	their <em>equity</em> (more on equity later). Your move and its equity's difference
-	from the best move will be highlighted. The smaller the difference, the better
-	your selection was.
-	</li>
+    <li>
+    Okay, I am sold. How do I actually use the site for training?
+    <p>
+    It is highly beneficial to <a href="/register">register</a> first so the system
+    can track your rating. However, registration is not mandatory. Then, just navigate
+    to the <a href="/">home page</a> and start playing positions. After each submission,
+    you will get the list of best moves, as evaluated by the computer, together with
+    their <em>equity</em> (more on equity later). Your move and its equity's difference
+    from the best move will be highlighted. The smaller the difference, the better
+    your selection was.
+    </li>
 
-	<li>
-	What is this <em>equity</em> you referred to?
-	<p>
-	In rough terms, the equity is how many points you expect to win from this position,
-	on average. For example, if in a position you have 60% chance to win one point and
-	40% chance to lose one point, then your equity would be <i>approximately</i> 
-	0.6 * 1 - 0.4 * 1 = 
-	<strong>0.2</strong> (Note that in most cases gammons and backgammons are possible, and
-	thus the aforementioned equation would become slightly more complicated). 
-	For the purposes of this site the equity would not be exactly 0.2, since the match
-	score is also taken into account; i.e. the equities presented along with the analysis
-	are an indication of how likely you are to win the match, not merely the game. Equities
-	of this type are called <em>normalized</em>. 
-	<a href="https://www.gnu.org/software/gnubg/manual/html_node/Equities-explained.html#Equities-explained">The details are somewhat involved</a>, but they do not matter
-	to players who simply seek to improve (and not to write their own analysis software).
-	</li>
+    <li>
+    What is this <em>equity</em> you referred to?
+    <p>
+    In rough terms, the equity is how many points you expect to win from this position,
+    on average. For example, if in a position you have 60% chance to win one point and
+    40% chance to lose one point, then your equity would be <i>approximately</i> 
+    0.6 * 1 - 0.4 * 1 = 
+    <strong>0.2</strong> (Note that in most cases gammons and backgammons are possible, and
+    thus the aforementioned equation would become slightly more complicated). 
+    For the purposes of this site the equity would not be exactly 0.2, since the match
+    score is also taken into account; i.e. the equities presented along with the analysis
+    are an indication of how likely you are to win the match, not merely the game. Equities
+    of this type are called <em>normalized</em>. 
+    <a href="https://www.gnu.org/software/gnubg/manual/html_node/Equities-explained.html#Equities-explained">The details are somewhat involved</a>, but they do not matter
+    to players who simply seek to improve (and not to write their own analysis software).
+    </li>
 
-	<li>
-	What is this <em>ply</em> that appears in the analysis results?
-	<p>
-	The computer analyses candidate plays by looking ahead to the positions to which they lead.
-	The number of moves they look ahead is called a <em>ply</em>. So if a play is marked as 3-ply this 
-	means that the computer has looked 3 moves ahead while analysing it. The higher the ply count,
-	the more accurate the equity calculated.
-	</li>
+    <li>
+    What is this <em>ply</em> that appears in the analysis results?
+    <p>
+    The computer analyses candidate plays by looking ahead to the positions to which they lead.
+    The number of moves they look ahead is called a <em>ply</em>. So if a play is marked as 3-ply this 
+    means that the computer has looked 3 moves ahead while analysing it. The higher the ply count,
+    the more accurate the equity calculated.
+    </li>
 
-	<li id="equit_non_desc_explanation">
-	How is it possible that a move B be ranked lower than move A, even though B's equity is larger than A's?
-	<p>
-	We can explain this via an example. Suppose that at 2-ply it is:
+    <li id="equit_non_desc_explanation">
+    How is it possible that a move B be ranked lower than move A, even though B's equity is larger than A's?
+    <p>
+    We can explain this via an example. Suppose that at 2-ply it is:
 
-	<ul>
-		<li> A: 0.200 </li>
-		<li> B: 0.170 </li>
-	</ul>
+    <ul>
+        <li> A: 0.200 </li>
+        <li> B: 0.170 </li>
+    </ul>
 
-	<p> 
-	In view of those results, the computer decides not to evaluate B at the
-	next ply, because it is clearly worse than A. It then proceeds to the
-	evaluation at 3-ply and finds that the equity for A is now 0.160. This
-	doesn't mean that B is a better move. In our example here, if the computer
-	would continue evaluation of B at 3-ply it would almost certainly find that
-	its equity would be even less than 0.160. Remember that equities can only
-	be compared at equal ply. In other words, ply trumps equity.
+    <p> 
+    In view of those results, the computer decides not to evaluate B at the
+    next ply, because it is clearly worse than A. It then proceeds to the
+    evaluation at 3-ply and finds that the equity for A is now 0.160. This
+    doesn't mean that B is a better move. In our example here, if the computer
+    would continue evaluation of B at 3-ply it would almost certainly find that
+    its equity would be even less than 0.160. Remember that equities can only
+    be compared at equal ply. In other words, ply trumps equity.
 
-	</li>
+    </li>
 
 </ul>
 </div>

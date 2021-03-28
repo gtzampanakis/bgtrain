@@ -1,179 +1,179 @@
 p {
-	margin: .45em auto;
+    margin: .45em auto;
 }
 #match_score table td img {
-	width: 10pt;
+    width: 10pt;
 }
 
 #gnu_id, #postags {
-	font-size: smaller;
+    font-size: smaller;
 }
 #gnu_id span {
-	font-family: monospace;
+    font-family: monospace;
 }
 .overflow_indicator {
-	text-align: center;
-	vertical-align: middle;
-	display: table-cell;
-	padding: 0;
-	margin: 0;
-	font-weight: bolder;
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+    padding: 0;
+    margin: 0;
+    font-weight: bolder;
 }
 .cube_indicator {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 #board_column {
-	margin: 0 auto;
-	border: 0px solid black;
+    margin: 0 auto;
+    border: 0px solid black;
 }
 #match_score table td {
-	border: 1px solid black;
-	padding: 5px;
-	text-align: right;
+    border: 1px solid black;
+    padding: 5px;
+    text-align: right;
 }
 #match_score table {
-	border-spacing: 1px;
-	border-collapse: collapse;
+    border-spacing: 1px;
+    border-collapse: collapse;
 }
 #match_score table td {
-	padding: .2em .5em;
+    padding: .2em .5em;
 }
 #submit {
 }
 #move {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 .played_die {
-	opacity: .5;
+    opacity: .5;
 }
 #page_columns > tbody > tr > td {
-	vertical-align: top;
+    vertical-align: top;
 }
 .selected_move {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 #match_score table td, #match_score table th {
-	border: 2px solid gray;
+    border: 2px solid gray;
 }
 td.equity, td.diff {
 }
 #submit, #next_position {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 td.equity, td.diff {
-	text-align: right;
+    text-align: right;
 }
 img.checker, img.cube, img.die {
-	z-index: 5;
+    z-index: 5;
 }
 img.number, img.overflow_indicator {
-	z-index: 10;
+    z-index: 10;
 }
 .loading_indicator {
-	margin-left: .5em;
-	margin-right: .5em;
+    margin-left: .5em;
+    margin-right: .5em;
 }
 .loading_indicator img {
-	height: 14pt;
-	vertical-align: middle;
+    height: 14pt;
+    vertical-align: middle;
 }
 #ellipsis {
-	text-align: center;
+    text-align: center;
 }
 #moves_column_td {
-	padding-left: 1em;
-	font-family: sans-serif;
+    padding-left: 1em;
+    font-family: sans-serif;
 }
 
 .disabled {
-	color: gray;
+    color: gray;
 }
 #moves_table .show_move {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 .show_move label {
-	display: block;
-	width: 100%;
-	height: 100%;
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .comment_info {
-	border-bottom: 1px solid black;
+    border-bottom: 1px solid black;
 }
 
 .comment_info, .comment_body {
-	margin-bottom: .4em;
-	padding: 0 .1em;
+    margin-bottom: .4em;
+    padding: 0 .1em;
 }
 
 .comment_body {
-	word-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .comment_box {
-	border: 1px solid gray;
-	padding: .2em .8em;
-	background-color: #D9D9D9;
-	margin-bottom: 5px;
+    border: 1px solid gray;
+    padding: .2em .8em;
+    background-color: #D9D9D9;
+    margin-bottom: 5px;
 }
 
 
 .comment_info_value {
-	font-style: italic;
-	font-size: smaller;
+    font-style: italic;
+    font-size: smaller;
 }
 
 .comment_author {
-	font-weight: bolder;
+    font-weight: bolder;
 }
 
 .comment_info {
-	font-size: smaller;
+    font-size: smaller;
 }
 
 .comment_info table {
-	width: 100%
+    width: 100%
 }
 
 .comment_info td {
-	width: 50%;
-	overflow: visible;
-	white-space: nowrap;
-	padding: 0;
+    width: 50%;
+    overflow: visible;
+    white-space: nowrap;
+    padding: 0;
 }
 
 .comment_info td:nth-child(2) {
-	text-align: right;
+    text-align: right;
 }
 
 #comments h3 {
-	margin-top: 6px;
-	margin-bottom: 7px;
+    margin-top: 6px;
+    margin-bottom: 7px;
 }
 
 #comments h4, h4.report_position {
-	margin-top: 10px;
-	margin-bottom: 2px;
+    margin-top: 10px;
+    margin-bottom: 2px;
 }
 
 .comment_info_on {
-	font-size: xx-small;
+    font-size: xx-small;
 }
 
 #comments textarea, textarea.report_position {
-	width: 100%;
-	height: 8em;
+    width: 100%;
+    height: 8em;
 }
 
 #comments textarea + p, textarea.report_position + p {
-	text-align: right;
+    text-align: right;
 }
 
 #moves_table + p input {
-	width: 100%;
+    width: 100%;
 }
 
 #board_column {
-	width: 432px;
+    width: 432px;
 }

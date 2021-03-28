@@ -1,10 +1,10 @@
 <%!
-	import cherrypy as cp
-	import gnubg.webapp as webapp
-	import gnubg.generate as gnubggen
-	import gnubg.config as conf
-	import gnubg.common
-	import gnubg.webutil as webutil
+    import cherrypy as cp
+    import gnubg.webapp as webapp
+    import gnubg.generate as gnubggen
+    import gnubg.config as conf
+    import gnubg.common
+    import gnubg.webutil as webutil
 %>
 
 <%
@@ -12,53 +12,53 @@
 
 <hr>
 
-	% if len(rows) > 0:
-	<h3 id="comments_header">
-		${len(rows)|h} comment${'s' if len(rows) > 1 else ''} for this position:
-	</h3>
-	% else:
-	<h4 id="comments_header">
-	No comments for this position yet.
-	</h4>
-	% endif
+    % if len(rows) > 0:
+    <h3 id="comments_header">
+        ${len(rows)|h} comment${'s' if len(rows) > 1 else ''} for this position:
+    </h3>
+    % else:
+    <h4 id="comments_header">
+    No comments for this position yet.
+    </h4>
+    % endif
 
-	% if len(rows) > 0 and not show_comments:
-	Please submit a move to reveal the comments.
-	% endif
+    % if len(rows) > 0 and not show_comments:
+    Please submit a move to reveal the comments.
+    % endif
 
 % if show_comments:
-	% for comment_id, username, postedat, comment in rows:
-	<div class="comment_box" id="comment_id_${comment_id|u,h}">
-		<div class="comment_info">
-			<table><tr>
-			<td>
-				<span class="comment_author comment_info_value">${username|h}</span>
-				<span class="comment_info_on">&nbsp;on</span>
-				<span class="comment_postedat comment_info_value">${postedat|h}</span>
-			</td>
-			<td>
-				<a href="#comment_id_${comment_id|u,h}">#${comment_id|h}</a>
-			</td>
-			</tr></table>
-		</div>
-		<div class="comment_body">${webutil.unicode_to_html(comment)}</div>
-	</div>
-	% endfor
+    % for comment_id, username, postedat, comment in rows:
+    <div class="comment_box" id="comment_id_${comment_id|u,h}">
+        <div class="comment_info">
+            <table><tr>
+            <td>
+                <span class="comment_author comment_info_value">${username|h}</span>
+                <span class="comment_info_on">&nbsp;on</span>
+                <span class="comment_postedat comment_info_value">${postedat|h}</span>
+            </td>
+            <td>
+                <a href="#comment_id_${comment_id|u,h}">#${comment_id|h}</a>
+            </td>
+            </tr></table>
+        </div>
+        <div class="comment_body">${webutil.unicode_to_html(comment)}</div>
+    </div>
+    % endfor
 
-	% if webapp.get_logged_in_username() is not None:
-		<h4 id="add_a_comment_header">Add a comment:</h4>
-		<form action="" method="post">
-			<textarea name="body"></textarea>
-			<p>
-			<input type="hidden" name="gnuid" value="${position_id|h}">
-			% if cp.session.get('comment_post_error_message'):
-			<span class="error">
-				${cp.session.pop('comment_post_error_message')|h}
-			</span>
-			% endif
-			<input id="post_comment_button" onclick="postComment(); return false;" type="button" value="Post">
-		</form>
-	% else:
-		<h4>Please login to comment.</h4>
-	% endif
+    % if webapp.get_logged_in_username() is not None:
+        <h4 id="add_a_comment_header">Add a comment:</h4>
+        <form action="" method="post">
+            <textarea name="body"></textarea>
+            <p>
+            <input type="hidden" name="gnuid" value="${position_id|h}">
+            % if cp.session.get('comment_post_error_message'):
+            <span class="error">
+                ${cp.session.pop('comment_post_error_message')|h}
+            </span>
+            % endif
+            <input id="post_comment_button" onclick="postComment(); return false;" type="button" value="Post">
+        </form>
+    % else:
+        <h4>Please login to comment.</h4>
+    % endif
 % endif
