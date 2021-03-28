@@ -6,17 +6,17 @@ import os
 import urllib
 import random
 import collections
+import sys
 import itertools
 import time
 
 import cherrypy as cp
 import mako.template as mt
 import mako.lookup as ml
-import gnubg.webutil as webutil
-import gnubg.generate as gnubggen
-import gnubg.common as gc
-import gnubg.config as conf
-import gnubg.elo as elo
+import webutil
+import common as gc
+import config as conf
+import elo as elo
 
 logger = logging.getLogger(__name__)
 
@@ -1272,7 +1272,7 @@ def get_comments_html(gnuid, show_comments):
 	
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and sys.argv[1] == 'devserver':
 	logging.basicConfig(level = logging.DEBUG)
 	application = Application()
 	config_path = gc.get_config_file_path()

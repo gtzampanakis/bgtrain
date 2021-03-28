@@ -1,9 +1,9 @@
 import logging, os
-import MySQLdb
+import sqlite3
 import cherrypy as cp
-import gnubg.dbapiutil as dbapiutil
-import gnubg.config as c
-import gnubg.gamerep as gg
+import dbapiutil
+import config as c
+import gamerep as gg
 from passlib.apps import custom_app_context as pwd_context
 
 LOGGER = logging.getLogger()
@@ -11,6 +11,8 @@ LOGGER = logging.getLogger()
 CHEQUER_DECISION = 'Q'
 DOUBLE_OR_ROLL_DECISION = 'D'
 TAKE_OR_DROP_DECISION = 'T'
+
+SQLITE3_CONN_STRING_PREFIX = 'sqlite3://'
 
 def get_config_file_path():
 	config_path = os.environ.get('BGTRAIN_CONFIG_FILE')
@@ -27,18 +29,12 @@ def get_config():
 	return c
 
 def get_conn():
-	import json
-	import cherrypy as cp
-	conn_string = get_web_config().get('db').get('conn.string')
-	LOGGER.info('Loaded conn.string: %s', conn_string)
-	connect_parameters = json.loads(
-			os.environ.get('BGTRAIN_CONNECT_PARAMETERS')
-				or
-			conn_string
-	)
-	conn = dbapiutil.connect(
-			lambda: MySQLdb.connect(**connect_parameters)
-	)
+	conn_string = get_web_config().get('db').get('conn_string')
+	assert conn_string.startswith(SQLITE3_CONN_STRING_PREFIX)
+	path = conn_string[len(SQLITE3_CONN_STRING_PREFIX):]
+	def get_dbapi_conn():
+		dbapi_conn = sqlite3.connect(path, isolation_level=None)
+	conn = dbapiutil.connect(get_dbapi_conn)
 	return conn
 
 def verify_password(password_provided, password_hash):

@@ -7,24 +7,18 @@ class Connection:
 	def __init__(self, dbapi_conn):
 		self.dbapi_conn = dbapi_conn
 
-	def execute(self, sql, params = [ ], convert_dates = True):
+	def execute(self, sql, params = [ ], convert_datetimes = True):
 		logger.debug('Starting execution of query: %s', sql)
 		logger.debug('Parameters for last query: %s', params)
 
 		t0 = time.time()
 		cursor = self.dbapi_conn.cursor()
 
-		if convert_dates:
+		if convert_datetimes:
 			conv_params = [ ]
 			for el in params:
 				if isinstance(el, datetime.date) or isinstance(el, datetime.datetime):
-					conv_params.append(
-						'/'.join([
-							str(el.year).zfill(4),
-							str(el.month).zfill(2),
-							str(el.day).zfill(2),
-						])
-					)
+					conv_params.append(el.isoformat())
 				else:
 					conv_params.append(el)
 			params = conv_params
