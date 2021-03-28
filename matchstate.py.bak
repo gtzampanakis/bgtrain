@@ -94,7 +94,7 @@ class GameState:
             self.won = sign * 1
         else:
             assert len(move) % 2 == 0
-            for start in range(0, len(move), 2):
+            for start in xrange(0, len(move), 2):
                 pair = move[start:start+2]
                 a, b = pair
 # Black player goes forward in the alphabet, white player goes backward.
@@ -141,7 +141,7 @@ class MatchState:
     def from_sgf(self, path):
         for game_mo, turn_mo_iter in iter_over_moves(test_path):
             gs = GameState()
-            print(game_mo.group('WHITESCORE'), game_mo.group('BLACKSCORE'))
+            print game_mo.group('WHITESCORE'), game_mo.group('BLACKSCORE')
             for turn_mo in turn_mo_iter:
                 turn_and_move = turn_mo.group('TURNANDMOVE')
                 cube_analysis = turn_mo.group('CUBEANALYSIS')
@@ -163,24 +163,24 @@ if __name__ == '__main__':
     test_path = r'matches\f82e686a-f74a-4353-a7aa-8d5f92da88a5.sgf'
     if 0:
         ms = GameState()
-        print(ms.cheq_distr)
+        print ms.cheq_distr
         ms.do_sgf_move('B[15stlq]')
-        print(ms.cheq_distr)
+        print ms.cheq_distr
         ms.do_sgf_move('W[23mkxu]')
-        print(ms.cheq_distr)
+        print ms.cheq_distr
     elif 0:
         ms = GameState()
         for gamei, move in list(iter_over_moves(test_path))[:1000]:
-            print('New turn in game: ' + str(gamei))
-            print(' ', end=' ')
+            print 'New turn in game: ' + str(gamei)
+            print ' ',
             for letter in reversed('abcdefghijklmnopqrstuvwx'):
-                print(letter, '', end=' ')
-            print()
+                print letter, '',
+            print
             pp(ms.cheq_distr)
-            print(' ', end=' ')
+            print ' ',
             for letter in 'abcdefghijklmnopqrstuvwxyz':
-                print(letter, '', end=' ')
-            print()
+                print letter, '',
+            print
             pp(move)
             ms.do_sgf_move(move)
             pp(ms.won)

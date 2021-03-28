@@ -664,7 +664,7 @@ class Application:
 
                             min_rawequity_of_previous_ply = min_rawequity
 
-                        for ply, eq_diff in list(ply_to_eq_diff.items()):
+                        for ply, eq_diff in ply_to_eq_diff.items():
                             if ply >= selection_ply:
                                 diff += -eq_diff -conf.PLY_PENALTY
 
@@ -817,7 +817,7 @@ class Application:
 
         result = {'success' : ''}
 
-        for name, value in list(kwargs.items()):
+        for name, value in kwargs.items():
             # Sanitization:
             if name in DEFAULT_PREFERENCES:
             # Done sanitization.

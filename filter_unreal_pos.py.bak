@@ -8,7 +8,7 @@ def find_threshold():
         m = [(gnuid, gg.position_id_to_max_pips(gnuid.split(':')[0])) for gnuid in gnuids]
         m.sort(key = lambda o: o[1])
         total_records = len(m)
-        print(m[int(total_records * .95)])
+        print m[int(total_records * .95)]
 
 def main():
     with gc.get_conn() as conn:
@@ -17,7 +17,7 @@ def main():
             gnuid = row[0]
             decision_type = row[1]
             if gc.should_gnuid_be_filtered(gnuid, decision_type):
-                print('Deleting gnuid:', gnuid)
+                print 'Deleting gnuid:', gnuid
                 conn.execute('delete from posmatchids where posmatchid = %s', [gnuid])
                 conn.commit()
 

@@ -1,9 +1,9 @@
 import logging, os
 import sqlite3
 import cherrypy as cp
-from . import dbapiutil
-from . import config as c
-from . import gamerep as gg
+import dbapiutil
+import config as c
+import gamerep as gg
 from passlib.apps import custom_app_context as pwd_context
 
 LOGGER = logging.getLogger()
@@ -91,7 +91,7 @@ def is_bearoffopp(matchid):
         return True
 
 def points_to_most_backward(points):
-    for pointi in  range(24, -1, -1):
+    for pointi in  xrange(24, -1, -1):
         if points[pointi] != 0:
             return pointi
 

@@ -1,7 +1,7 @@
 import os, unittest, threading, subprocess, json, tempfile, os
 import wsgiref.validate
 import wsgiref.simple_server
-import cherrypy, urllib.request, urllib.parse, urllib.error, requests
+import cherrypy, urllib, requests
 import gnubg
 import gnubg.webapp as gw
 import gnubg.common as gc

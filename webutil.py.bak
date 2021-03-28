@@ -36,7 +36,7 @@ def get_insert_args(table, on_conflict = None, **kwargs):
         '''
     names = [ ]
     values = [ ]
-    for name, value in kwargs.items():
+    for name, value in kwargs.iteritems():
         names.append(name)
         if hasattr(value, 'year') and hasattr(value, 'month') and hasattr(value, 'day'):
             value = date_to_sqlite_str(value)
@@ -62,7 +62,7 @@ class CheckedDict(collections.MutableMapping):
     def __init__(self, validation, initializion = { }):
         self.dict = { }
         self.validation_mapping = validation
-        for name, val in initializion.items():
+        for name, val in initializion.iteritems():
             self[name] = val
 
     def __setitem__(self, key, val):
@@ -153,7 +153,7 @@ def rest(f):
 unicode_to_html_re = re.compile(r'[\n\f\r]+')
 def unicode_to_html(text):
     from mako.filters import html_escape
-    text = str(html_escape(text))
+    text = unicode(html_escape(text))
     text = unicode_to_html_re.sub('<p>', text)
     return text
 

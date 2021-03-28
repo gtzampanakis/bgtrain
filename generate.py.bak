@@ -1,5 +1,5 @@
 import logging, os, uuid, re, glob, sqlite3, shutil, itertools, time, datetime, copy
-from . import gamerep
+import gamerep
 import subprocess as sp
 import gnubg.common as gc
 
@@ -193,16 +193,16 @@ if __name__ == '__main__':
                 with open(analysis_filename, 'r') as analysis_file:
                     analysis_text = buffer(analysis_file.read())
                     scan(pairs, analysis_text)
-                    print('--------------------------------')
+                    print '--------------------------------'
                     OUTPUT_PATH = datetime.datetime.strftime(
                             datetime.datetime.now(), 
                             'exportpos_%Y-%m-%dT%H.%M.%S.%f.csv'
                     )
                     WORK_PATH = os.path.join(ROOT_DIR, 'dump', OUTPUT_PATH + WORK_SUFFIX)
-                    print('Writing', WORK_PATH, '...')
+                    print 'Writing', WORK_PATH, '...'
                     with open(WORK_PATH, 'wb') as OUTPUT_FILE:
                         write_to_csv()
-                    print('Done writing', WORK_PATH, '.')
+                    print 'Done writing', WORK_PATH, '.'
                     os.rename(WORK_PATH, WORK_PATH[: -len(WORK_SUFFIX)])
                 dest_path = os.path.join(SAVE_PATH, 'processed', os.path.basename(analysis_filename))
                 shutil.move(analysis_filename, dest_path)

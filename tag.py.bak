@@ -66,7 +66,7 @@ if __name__ == '__main__':
     with gc.get_conn() as conn:
 
         def add_tag(matchid, tag):
-            print('Called add_tag with %s and %s' % (matchid, tag))
+            print 'Called add_tag with %s and %s' % (matchid, tag)
             insert_tag_sql = '''
                 insert into postags
                 (posmatchid, tag, createdat)
@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 if func(posmatchid):
                     add_tag(posmatchid, tag)
             if rowi % 500 == 0:
-                print(rowi)
+                print rowi
                 conn.commit()
         conn.execute('update tags set donetagging = 1')
 

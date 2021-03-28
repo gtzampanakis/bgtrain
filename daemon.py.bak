@@ -66,7 +66,7 @@ class Daemon:
                         to_wait = 0
                     time.sleep(to_wait)
             except socket.error:
-                print('Failed to acquire lock')
+                print 'Failed to acquire lock'
                 LOGGER.debug('Failed to acquire lock')
                 return
 
@@ -75,7 +75,7 @@ class Daemon:
             raise
 
 if __name__ == '__main__':
-    def f(): print(1)
+    def f(): print 1
 
     daemon = Daemon(
             logpath = os.path.join('test.log'),

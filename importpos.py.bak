@@ -6,7 +6,7 @@ ROOT_DIR = os.path.dirname(__file__)
 
 with gc.get_conn() as conn:
     for path in glob.glob(os.path.join(ROOT_DIR, 'dump', '*.csv')):
-        print('Processing', path, '...')
+        print 'Processing', path, '...'
         with open(path, 'rb') as inf:
             for line in inf:
                 posmatchid, decisiontype, move, equity, version, ply = line.split(';')
@@ -30,8 +30,8 @@ with gc.get_conn() as conn:
                 conn.execute(sql, [posmatchid, move, equity, ply if ply != 'None' else None])
         conn.commit()
         os.rename(path, path + '.processed')
-        print('Done processing', path)
-        print()
+        print 'Done processing', path
+        print
 
 
             

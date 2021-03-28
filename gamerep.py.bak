@@ -20,7 +20,7 @@ def decode_gnuid(gnuid):
         to_append = pad(str(bin(ord(byte))).replace('0b', ''))
         le_bits += to_append
     bits = ''
-    for start in range(len(le_bits) / 8):
+    for start in xrange(len(le_bits) / 8):
         start *= 8
         byte = ''.join(list(reversed(le_bits[start:start+8])))
         bits += byte
@@ -28,7 +28,7 @@ def decode_gnuid(gnuid):
 
 def encode_bits(bits):
     to_encode = [ ]
-    for start in range(len(bits) / 8):
+    for start in xrange(len(bits) / 8):
         start *= 8
         byte = ''.join(list(reversed(bits[start:start+8])))
         to_encode.append(int(byte, 2))
@@ -69,8 +69,8 @@ class Match:
         result = Match()
         bits = decode_gnuid(mid)
         result.cube = decb2(bits[0:4])
-        print(bits)
-        print(result.cube)
+        print bits
+        print result.cube
         
 
 def whose_turn(mid):
@@ -148,13 +148,13 @@ def position_id_to_checker_list(pid):
 
 if __name__ == '__main__':
     if 1:
-        print(position_id_to_points('6jbBASRwt4kHAA:8AmyAAAAIAAE')[:25])
-        print(position_id_to_points('6jbBASRwt4kHAA:8AmyAAAAIAAE')[25:])
-        print(position_id_to_pips('6jbBASRwt4kHAA:8AmyAAAAIAAE'))
+        print position_id_to_points('6jbBASRwt4kHAA:8AmyAAAAIAAE')[:25]
+        print position_id_to_points('6jbBASRwt4kHAA:8AmyAAAAIAAE')[25:]
+        print position_id_to_pips('6jbBASRwt4kHAA:8AmyAAAAIAAE')
     if 0:
-        print(position_id_to_points('4HPwATDgc/ABMA'))
-        print(points25_to_pips(position_id_to_points('4HPwATDgc/ABMA')[:25]))
-        print(position_id_to_max_pips('4HPwATDgc/ABMA'))
+        print position_id_to_points('4HPwATDgc/ABMA')
+        print points25_to_pips(position_id_to_points('4HPwATDgc/ABMA')[:25])
+        print position_id_to_max_pips('4HPwATDgc/ABMA')
     if 0:
-        print(len(position_id_to_checker_list('4HPwATDgc/ABMA')))
-        print((position_id_to_checker_list('4HPwATDgc/ABMA')))
+        print len(position_id_to_checker_list('4HPwATDgc/ABMA'))
+        print (position_id_to_checker_list('4HPwATDgc/ABMA'))
