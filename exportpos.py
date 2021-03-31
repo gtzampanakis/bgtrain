@@ -1,5 +1,5 @@
 import logging, os, itertools
-import gnubg.common as gc
+import common as gc
 
 logger = logging.getLogger(__name__)
 ROOT_DIR = os.path.dirname(__file__)

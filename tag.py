@@ -1,6 +1,6 @@
 import logging, os, sys
-import gnubg.common as gc
-import gnubg.gamerep as gamerep
+import common as gc
+import gamerep as gamerep
 
 LOGGER = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
                 insert into postags
                 (posmatchid, tag, createdat)
                 values
-                (%s, %s, utc_timestamp())
+                (%s, %s, current_timestamp)
             '''
             conn.execute(insert_tag_sql, [matchid, tag])
 

@@ -1270,7 +1270,6 @@ set cube use on
 
 # by me:
 set display off
-
 set confirm default ask
 set gotofirstgame off
 set output matchpc on

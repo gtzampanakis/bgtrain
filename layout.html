@@ -2,8 +2,8 @@
 
 <%!
     import cherrypy as cp
-    import gnubg.webutil as webutil
-    import gnubg.webapp as webapp
+    import webutil
+    import webapp
 %>
 
 
@@ -30,17 +30,6 @@
     </head>
     <body>
 
-        ## ${cp.request.request_line.split(' ')[1]|h}
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
         <div id="page_wrapper">
                 <table id="banner_bar"><tr>
 
@@ -65,7 +54,6 @@
                         <li><a href="/ratinghist">Rating History</a>
                         <li><a href="/prefs">Preferences</a>
                         % endif
-                        <li><a href="https://www.facebook.com/pages/bgtraincom/623916324334777" target="_blank"><img alt="Facebook logo" src="/static/cacheable/facebook_logo.png"></a>
                         </ul>
                         </td>
                         </tr></table>
@@ -189,21 +177,17 @@
                 <%block name="numberofpositions">
                 <span class="footer">
                     All design and code by <span class="author_name">Giorgos Tzampanakis</span>: 
-                    <a href="/static/cacheable/CV.Giorgos.Tzampanakis.pdf">CV</a>,
-                    <a href="mailto:giorgos.tzampanakis@gmail.com">email</a>
+                    <a href="mailto:giorgos.tzampanakis@gmail.com">email</a>.
                 </span>
                 <span class="footer">
-                    Full source code for the website available at <a href="https://github.com/gtzampanakis/gnubg">my github page</a>.
+                    Source code for the website available at <a href="https://github.com/gtzampanakis/bgtrain">my github page</a>.
+                </span>
+                <span class="footer">
+                    Bitcoin donations to 1EXiKQAoZegsCUz1xAtkLbs3Gcf1qDtNVs.
                 </span>
                 <hr>
-                ## <span class="footer">
-                ##     <span class="stat">${webapp.get_number_of_positions()|h}</span> positions in the database.
-                ## </span>
                 <span class="footer">
                     <span class="stat">${webapp.get_number_of_submissions()|h}</span> positions played in the last 24 hours.
-                </span>
-                <span class="footer">
-                    Interested in tennis and other sports statistical analysis? Visit <a target="_blank" href="http://www.statsfair.com">Statsfair!</a>
                 </span>
                 &nbsp;
 

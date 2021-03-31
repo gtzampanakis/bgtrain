@@ -1,9 +1,9 @@
 import logging, os
 import sqlite3
 import cherrypy as cp
-from . import dbapiutil
-from . import config as c
-from . import gamerep as gg
+import dbapiutil
+import config as c
+import gamerep as gg
 from passlib.apps import custom_app_context as pwd_context
 
 LOGGER = logging.getLogger()
@@ -32,9 +32,12 @@ def get_conn():
     conn_string = get_web_config().get('db').get('conn_string')
     assert conn_string.startswith(SQLITE3_CONN_STRING_PREFIX)
     path = conn_string[len(SQLITE3_CONN_STRING_PREFIX):]
-    def get_dbapi_conn():
-        dbapi_conn = sqlite3.connect(path, isolation_level=None)
-    conn = dbapiutil.connect(get_dbapi_conn)
+    conn = dbapiutil.connect(
+        dbapi_module = sqlite3,
+        connect_args = [path],
+        connect_kwargs = dict(isolation_level=None),
+        init_statements = ['PRAGMA foreign_keys = ON'],
+    )
     return conn
 
 def verify_password(password_provided, password_hash):

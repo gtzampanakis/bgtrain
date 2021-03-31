@@ -17,10 +17,10 @@ def decode_gnuid(gnuid):
     decoded = base64.b64decode(gnuid)
     le_bits = ''
     for byte in decoded:
-        to_append = pad(str(bin(ord(byte))).replace('0b', ''))
+        to_append = pad(str(bin(byte)).replace('0b', ''))
         le_bits += to_append
     bits = ''
-    for start in range(len(le_bits) / 8):
+    for start in range(len(le_bits) // 8):
         start *= 8
         byte = ''.join(list(reversed(le_bits[start:start+8])))
         bits += byte
@@ -28,11 +28,11 @@ def decode_gnuid(gnuid):
 
 def encode_bits(bits):
     to_encode = [ ]
-    for start in range(len(bits) / 8):
+    for start in range(len(bits) // 8):
         start *= 8
         byte = ''.join(list(reversed(bits[start:start+8])))
         to_encode.append(int(byte, 2))
-    result = base64.b64encode(bytearray(to_encode))
+    result = base64.b64encode(bytearray(to_encode)).decode('utf8')
     return result
             
 
