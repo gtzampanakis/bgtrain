@@ -1,14 +1,14 @@
 <%!
-    import gnubg.webapp as webapp
-    import gnubg.config as conf
-    import gnubg.common
+    import webapp
+    import config
+    import common
 %>
 
 <%def name="page_control(page, context_pages, total_records, records_per_page)">
 
     <%
-        max_page = (total_records - 1) / records_per_page + 1
-        low_limit, high_limit = gnubg.common.normalize_limits(
+        max_page = (total_records - 1) // records_per_page + 1
+        low_limit, high_limit = common.normalize_limits(
             page,
             context_pages,
             max_page
@@ -24,7 +24,7 @@
                     Prev
                 % endif
 
-                % for pagei in xrange(low_limit, high_limit):
+                % for pagei in range(low_limit, high_limit):
                 <a href="?page=${pagei|u,h}"
 
                     % if pagei == page:

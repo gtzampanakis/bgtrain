@@ -1,5 +1,5 @@
-import gnubg.gamerep as gg
-import gnubg.common as gc
+import gamerep as gg
+import common as gc
 
 def find_threshold():
     with gc.get_conn() as conn:

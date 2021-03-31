@@ -3,8 +3,8 @@ import wsgiref.validate
 import wsgiref.simple_server
 import cherrypy, urllib.request, urllib.parse, urllib.error, requests
 import gnubg
-import gnubg.webapp as gw
-import gnubg.common as gc
+import webapp as gw
+import common as gc
 
 ROOT_DIR = os.path.dirname(__file__)
 

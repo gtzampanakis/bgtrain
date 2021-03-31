@@ -1,13 +1,13 @@
 <%!
-    import gnubg.webapp as webapp
-    import gnubg.generate as gnubggen
-    import gnubg.config as conf
-    import gnubg.common
+    import webapp
+    import generate as gnubggen
+    import config as conf
+    import common
 %>
 
 <%
     def is_checker_decision():
-        return decision_type == gnubg.common.CHEQUER_DECISION
+        return decision_type == common.CHEQUER_DECISION
 
     def to_fixed_3(f):
         if f is None or f == '':

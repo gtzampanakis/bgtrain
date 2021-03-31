@@ -13,7 +13,7 @@ CREATE TABLE if not exists "comments"(
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "posmatchid" char(27) DEFAULT NULL,
-  "postedat" datetime NOT NULL,
+  "postedat" text NOT NULL,
   "parentid" int(10) DEFAULT NULL,
   "comment" mediumtext NOT NULL,
   CONSTRAINT "parentid_fk" FOREIGN KEY ("parentid") REFERENCES "comments" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -32,7 +32,7 @@ CREATE TABLE if not exists "posmatchids"(
   "version" int(11) DEFAULT NULL,
   "exported" bit(1) DEFAULT NULL,
   "matchid" char(32) DEFAULT NULL,
-  "createddate" datetime DEFAULT NULL,
+  "createddate" text DEFAULT NULL,
   "cluster" int(11) DEFAULT NULL,
   "submissions" int(11) DEFAULT NULL,
   UNIQUE ("posmatchid")
@@ -43,7 +43,7 @@ CREATE TABLE if not exists "postags"(
   "id" integer primary key,
   "POSMATCHID" char(27) NOT NULL,
   "TAG" varchar(30) NOT NULL,
-  "CREATEDAT" datetime NOT NULL,
+  "CREATEDAT" text NOT NULL,
   UNIQUE ("POSMATCHID","TAG"),
   CONSTRAINT "tagsfk" FOREIGN KEY ("TAG") REFERENCES "tags" ("TAG") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -62,7 +62,7 @@ CREATE TABLE if not exists "reports"(
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "posmatchid" char(27) DEFAULT NULL,
-  "postedat" datetime NOT NULL,
+  "postedat" text NOT NULL,
   "comment" mediumtext NOT NULL,
   CONSTRAINT "rep_posmatchid_fk" FOREIGN KEY ("posmatchid") REFERENCES "posmatchids" ("posmatchid") ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT "rep_username_fk" FOREIGN KEY ("username") REFERENCES "users" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -80,7 +80,7 @@ CREATE TABLE if not exists "tags"(
   "id" integer primary key,
   "TAG" varchar(30) NOT NULL,
   "DONETAGGING" char(1) DEFAULT NULL,
-  "CREATEDAT" datetime NOT NULL,
+  "CREATEDAT" text NOT NULL,
   UNIQUE ("TAG")
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE if not exists "users"(
   "submissions" int(11) DEFAULT NULL,
   "pwhash" varchar(120) DEFAULT NULL,
   "email" varchar(100) DEFAULT NULL,
-  "lastsubmission" datetime DEFAULT NULL,
+  "lastsubmission" text DEFAULT NULL,
   UNIQUE ("username")
 );
 create index if not exists "usersrating_idx" on "users"("rating");
@@ -101,7 +101,7 @@ CREATE TABLE if not exists "usersposmatchids"(
   "username" varchar(50) NOT NULL,
   "posmatchid" char(27) NOT NULL,
   "move" varchar(27) DEFAULT NULL,
-  "submittedat" datetime DEFAULT NULL,
+  "submittedat" text DEFAULT NULL,
   "ratinguser" float DEFAULT NULL,
   "ratingpos" float DEFAULT NULL,
   "eqdiff" float DEFAULT NULL,

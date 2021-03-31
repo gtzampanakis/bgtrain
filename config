@@ -1,17 +1,19 @@
+[global]
+server.socket_host: "0.0.0.0"
+
 [db]
-conn.string = r'{"host":"localhost", "port":3306, "user":"root", "passwd":"root", "db":"bgtrain3", "charset":"utf8"}'
+conn_string = 'sqlite3:///home/vagrant/dev/bgtrain/db/db.sqlite'
 
 [gnubg]
-program_path = r'C:\Program Files (x86)\gnubg\gnubg-cli.exe'
-commands_path = r'c:\users\giorgos\gnubg\gnubgautorc'
+program_path = '/usr/bin/gnubg'
+commands_path = r'/home/vagrant/dev/bgtrain/src/bgtrain/gnubgautorc_pythonanywhere'
 
 [/]
-tools.staticdir.root = r'C:\Users\Giorgos\gnubg'
+tools.staticdir.root = '/home/vagrant/dev/bgtrain/src/bgtrain'
 tools.sessions.on = True
 tools.sessions.storage_type = "file"
-tools.sessions.storage_path = r"C:\Users\Giorgos\gnubg\sessions"
-tools.sessions.timeout = 60
-tools.sessions.timeout = 3000000
+tools.sessions.storage_path = '/home/vagrant/dev/bgtrain/sessions'
+tools.sessions.timeout = 36000
 tools.gzip.on = True
 tools.trailing_slash.missing = True
 show.stacktraces = True

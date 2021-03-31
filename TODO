@@ -1,0 +1,3 @@
+* Remove total_records from all lib.page_control calls
+* tags work in a weird way
+* add "reset to default" in the preferences

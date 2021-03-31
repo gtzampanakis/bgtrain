@@ -13,10 +13,10 @@ import time
 import cherrypy as cp
 import mako.template as mt
 import mako.lookup as ml
-from . import webutil
-from . import common as gc
-from . import config as conf
-from . import elo as elo
+import webutil
+import common as gc
+import config as conf
+import elo
 
 logger = logging.getLogger(__name__)
 
@@ -94,25 +94,23 @@ def html(f):
         return f(self, *args, **kwargs)
     return f_
 
-def get_info_for_position(posmatchid, for_update = False):
+def get_info_for_position(posmatchid):
     sql = '''
         select rating, submissions
         from posmatchids
         where posmatchid = %s
-        {for_update}
-    '''.format(for_update = 'for update' if for_update else '')
+    '''
     row = cp.thread_data.conn.execute(sql, [posmatchid]).fetchone()
     if row:
         return (row[0], (row[1] or DEFAULT_POSITION_RATING))
 
 
-def get_user_info_for_username(username, for_update = False):
+def get_user_info_for_username(username):
     sql = """
         select rating, submissions
         from users
         where username = %s
-        {for_update}
-    """.format(for_update = 'for update' if for_update else '')
+    """
 
     player_rating = DEFAULT_PLAYER_RATING
     submissions = 0
@@ -135,14 +133,20 @@ def get_number_of_positions():
     select numofpositions
     from stats
     """
-    return cp.thread_data.conn.execute(sql).fetchone()[0]
+    row = cp.thread_data.conn.execute(sql).fetchone()[0]
+    if row is not None:
+        return row[0]
+    return -1
 
 def get_number_of_submissions():
     sql = """
     select numofsubmissionslast24h
     from stats
     """
-    return cp.thread_data.conn.execute(sql).fetchone()[0]
+    row = cp.thread_data.conn.execute(sql).fetchone()
+    if row is not None:
+        return row[0]
+    return -1
 
 def log_call(f):
     def f_(self, *args, **kwargs):
@@ -161,14 +165,17 @@ def get_leaderboard(offset, limit):
     from users
     where submissions >= %s
     and pwhash is not null
-    and lastsubmission > date_add(utc_timestamp(), interval -60 day)
+    and lastsubmission > %s
     order by rating desc
     limit %s offset %s
     """
 
+    now = datetime.datetime.utcnow()
+    threshold = now - datetime.timedelta(days = 60)
+
     rs = cp.thread_data.conn.execute(
             sql.format(select = 'select username, rating, submissions'), 
-            [conf.SUBMISSIONS_LIMIT_FOR_LEADERBOARD, limit, offset]
+            [conf.SUBMISSIONS_LIMIT_FOR_LEADERBOARD, threshold, limit, offset]
     )
 
     rows = [ ]
@@ -177,7 +184,7 @@ def get_leaderboard(offset, limit):
 
     count = cp.thread_data.conn.execute(
             sql.format(select = 'select count(*)'),
-            [conf.SUBMISSIONS_LIMIT_FOR_LEADERBOARD, 1, 0]
+            [conf.SUBMISSIONS_LIMIT_FOR_LEADERBOARD, threshold, 1, 0]
     ).fetchone()[0]
 
     return dict(
@@ -320,7 +327,7 @@ def select_new_gnuid(decision_type, username_to_use, tags):
         pm.rating {rating_sort_dir}
         limit %s
     ) sq
-    order by rand()
+    order by random()
     limit 1
     """
 
@@ -404,7 +411,6 @@ class Application:
         return { }
 
     @cp.expose
-    @profile_function_to_file('/home/giorgostzampanakis', 'prof', .05)
     @log_call
     @html
     @db
@@ -452,7 +458,7 @@ class Application:
 
             if get_logged_in_username() is None:
                 sql = '''
-                    insert ignore
+                    insert or ignore
                     into users
                     (username)
                     values
@@ -670,10 +676,12 @@ class Application:
 
 
                     player_rating, player_submissions = get_user_info_for_username(
-                                                get_username_to_use(), for_update = True)
+                        get_username_to_use()
+                    )
                     
                     position_rating, position_submissions = get_info_for_position(
-                                                                gnuid, for_update = True)
+                        gnuid
+                    )
 
                     logger.info('equity diff: %.3f', diff)
                     to_increment_player, to_increment_position = elo.match_increment(
@@ -688,12 +696,9 @@ class Application:
 
                     result['player_rating'] = player_rating
 
-# No need to return this, as it is not currently used.
-                    #result['position_rating'] = position_rating
-
                     username_to_use = get_username_to_use()
                     sql = '''
-                        insert ignore
+                        insert or ignore
                         into users
                         (username)
                         values
@@ -707,7 +712,7 @@ class Application:
                         (posmatchid, username, submittedat, move, 
                         ratinguser, ratingpos, eqdiff, increment, plasubms, possubms)
                         values
-                        (%s, %s, utc_timestamp(), %s, %s, %s, %s, %s, %s, %s)
+                        (%s, %s, current_timestamp, %s, %s, %s, %s, %s, %s, %s)
                     """
                     params = [gnuid, get_username_to_use(), selected_move,
                             player_rating, position_rating, diff, to_increment_player,
@@ -718,7 +723,7 @@ class Application:
                         update users
                         set rating = %s,
                         submissions = %s,
-                        lastsubmission = utc_timestamp()
+                        lastsubmission = current_timestamp
                         where username = %s
                     """
                     params = [player_rating, (player_submissions or 0) + 1, 
@@ -782,7 +787,10 @@ class Application:
         )
 
         result['pos_list_rows'] = [r for r in pos_list_rs]
-        result['count'] = r[2] if len(result['pos_list_rows']) > 0 else 0
+        if result['pos_list_rows']:
+            result['count'] = result['pos_list_rows'][-1][2]
+        else:
+            result['count'] = 0
         result['page'] = page
 
         return result
@@ -827,8 +835,8 @@ class Application:
                     (username, name, value)
                     values
                     (%s, %s, %s)
-                    on duplicate key update
-                    value = %s
+                    on conflict(username, name) do update
+                    set value = %s
                 '''
                 conn.execute(sql, [username, name, value, value])
 
@@ -842,14 +850,14 @@ class Application:
         sql = '''
             select * from (
                 select 
-                unix_timestamp(upm.submittedat) * 1000 as unix1000, 
+                strftime('%%s', upm.submittedat) * 1000 as unix1000,
                 upm.ratinguser
                 from
                 usersposmatchids upm
                 join posmatchids pm on pm.posmatchid = upm.posmatchid
                 where upm.username = %s
                 and pm.version >= %s
-                and upm.submittedat > date_add(utc_timestamp(), interval -60 day)
+                and upm.submittedat > datetime(current_timestamp, '-60 days')
                 order by upm.submittedat desc
                 limit %s /* Just to limit the max amount of data. */
             ) sq
@@ -1116,17 +1124,17 @@ class Application:
                 c2.username 
                 from comments c2
                 where c2.posmatchid = c1.posmatchid
-                and c2.postedat = max(c1.postedat)
+                order by c2.postedat desc
                 limit 1
             ) latestcommentby,
             max(c1.postedat), 
             count(*),
             (
                 select 
-                left(c2.comment, %s)
+                substr(c2.comment, 0, %s)
                 from comments c2
                 where c2.posmatchid = c1.posmatchid
-                and c2.postedat = max(c1.postedat)
+                order by c2.postedat desc
                 limit 1
             ) 
             commentsummary,
@@ -1188,7 +1196,7 @@ class Application:
         from usersposmatchids upm
         where upm.eqdiff is not null
         and upm.increment is not null
-        and upm.submittedat >= date_add(utc_timestamp(), interval - %s day)
+        and upm.submittedat >= datetime(current_timestamp, '- %s days')
         and upm.plasubms >= %s
         and upm.possubms >= %s
         limit 100000
@@ -1235,7 +1243,7 @@ def store_comment(body, gnuid):
         comments
         (username, posmatchid, comment, postedat)
         values
-        (%s, %s, %s, utc_timestamp())
+        (%s, %s, %s, current_timestamp)
     '''
     cp.thread_data.conn.execute(sql, [get_logged_in_username(), gnuid, body])
 
@@ -1245,7 +1253,7 @@ def store_report(body, gnuid):
         reports
         (username, posmatchid, comment, postedat)
         values
-        (%s, %s, %s, utc_timestamp())
+        (%s, %s, %s, current_timestamp)
     '''
     cp.thread_data.conn.execute(sql, [get_username_to_use(), gnuid, body])
 

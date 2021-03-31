@@ -1,6 +1,6 @@
 import logging, os, itertools
-import gnubg.common as gc
-from gnubg.daemon import Daemon
+import common as gc
+from daemon import Daemon
 
 logger = logging.getLogger(__name__)
 ROOT_DIR = os.path.dirname(__file__)
@@ -8,18 +8,20 @@ ROOT_DIR = os.path.dirname(__file__)
 def main():
     with gc.get_conn() as conn:
         conn.execute('''
-        update stats
-        set numofpositions = (
-            select count(*)
-            from posmatchids p1
-            where p1.version >= %s
+            update stats
+            set numofpositions = (
+                select count(*)
+                from posmatchids p1
+                where p1.version >= %s
+            )
+            ,numofsubmissionslast24h = (
+                select count(*)
+                from usersposmatchids
+                where submittedat > datetime('now', '-1 day')
+            )
+            ''',
+            [gc.get_config().POSITIONS_VERSION_TO_USE]
         )
-        ,numofsubmissionslast24h = (
-            select count(*)
-            from usersposmatchids
-            where submittedat > adddate(utc_timestamp(), -1)
-        )
-        ''', [gc.get_config().POSITIONS_VERSION_TO_USE])
             
 if __name__ == '__main__':
     ALSO_TO_STDERR = 0

@@ -1,7 +1,7 @@
 import logging, os, uuid, re, glob, sqlite3, shutil, itertools, time, datetime, copy
-from . import gamerep
+import gamerep
 import subprocess as sp
-import gnubg.common as gc
+import common as gc
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def scan(pairs, text, *args):
     while True:
         mo = None
         for matcher, handler in pairs:
-            mo = matcher.match(buffer(text, start, TEXT_BUFFER_SIZE))
+            mo = matcher.match(text[start:start+TEXT_BUFFER_SIZE])
             if mo:
                 start += mo.end()
                 if handler:
@@ -110,7 +110,7 @@ def store(analyzed):
                 if analyzed.type != gc.DOUBLE_OR_ROLL_DECISION
                 else gamerep.set_dice_to_zero(analyzed.match_id))
         posmatchid = analyzed.position_id + ':' + match_id
-        if not gc.should_gnuid_be_filtered(posmatchid, decision_type):
+        if not gc.should_gnuid_be_filtered(posmatchid, analyzed.type):
             analyzed.posmatchid = posmatchid
             stored.append(copy.copy(analyzed))
 
@@ -163,35 +163,43 @@ if __name__ == '__main__':
     parser.add_argument('minutes', help = 'Number of minutes to work for', type = float)
     parser.add_argument('version', help = 'Analysis version to store', type = int)
     args = parser.parse_args()
-    if 1:
-        with open(COMMANDS_PATH, 'r') as commands_file:
-            gnubg_config = commands_file.read()
-        start_time = time.time()
+    with open(COMMANDS_PATH, 'rb') as commands_file:
+        gnubg_config = commands_file.read()
+    start_time = time.time()
+    process = None
+    try:
         while True:
             process = sp.Popen(
                     [
                         GNUBG_PATH,
-                        '-q',
-                        '-r',
-                        '-t',
+                        '--quiet',
+                        '--no-rc',
+                        '--tty',
                     ],
                     stdin = sp.PIPE,
             )
             process.stdin.write(gnubg_config)
-            process.stdin.write('new match\n')
-            process.stdin.write('analyse match\n')
+            process.stdin.write(b'new match\n')
+            process.stdin.write(b'analyse match\n')
             batch_id = uuid.uuid4()
             filename = str(batch_id)
-            process.stdin.write('save match ' + os.path.join(SAVE_PATH, filename + '.sgf') + '\n')
-            process.stdin.write('export match text ' + os.path.join(SAVE_PATH, filename) + '.an.txt\n')
-            process.stdin.write('quit\n')
+            process.stdin.write(bytes(
+                'save match ' + os.path.join(SAVE_PATH, filename + '.sgf') + '\n',
+                'utf8'
+            ))
+            process.stdin.write(bytes(
+                'export match text ' + os.path.join(SAVE_PATH, filename) + '.an.txt\n',
+                'utf8'
+            ))
+            process.stdin.write(b'quit\n')
+            process.stdin.flush()
             return_code = process.wait()
             if return_code != 0:
                 raise Exception('Abnormal GNUBG termination')
 
             for analysis_filename in glob.glob(os.path.join(SAVE_PATH, filename + '*txt')):
                 with open(analysis_filename, 'r') as analysis_file:
-                    analysis_text = buffer(analysis_file.read())
+                    analysis_text = analysis_file.read()
                     scan(pairs, analysis_text)
                     print('--------------------------------')
                     OUTPUT_PATH = datetime.datetime.strftime(
@@ -200,7 +208,7 @@ if __name__ == '__main__':
                     )
                     WORK_PATH = os.path.join(ROOT_DIR, 'dump', OUTPUT_PATH + WORK_SUFFIX)
                     print('Writing', WORK_PATH, '...')
-                    with open(WORK_PATH, 'wb') as OUTPUT_FILE:
+                    with open(WORK_PATH, 'w') as OUTPUT_FILE:
                         write_to_csv()
                     print('Done writing', WORK_PATH, '.')
                     os.rename(WORK_PATH, WORK_PATH[: -len(WORK_SUFFIX)])
@@ -208,4 +216,6 @@ if __name__ == '__main__':
                 shutil.move(analysis_filename, dest_path)
             if (time.time() - start_time) / 60. > args.minutes:
                 break
+    finally:
+        process.kill()
 
