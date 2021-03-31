@@ -1,4 +1,4 @@
-CREATE TABLE "analyses" (
+CREATE TABLE if not exists "analyses"(
   "id" integer primary key,
   "posmatchid" char(27) NOT NULL,
   "move" varchar(27) NOT NULL,
@@ -7,9 +7,9 @@ CREATE TABLE "analyses" (
   UNIQUE ("posmatchid","move"),
   CONSTRAINT "anposmatchid" FOREIGN KEY ("posmatchid") REFERENCES "posmatchids" ("posmatchid") ON DELETE CASCADE
 );
-create index "anposmatchid_idx" on "analyses"("posmatchid");
+create index if not exists "anposmatchid_idx" on "analyses"("posmatchid");
 
-CREATE TABLE "comments" (
+CREATE TABLE if not exists "comments"( 
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "posmatchid" char(27) DEFAULT NULL,
@@ -20,11 +20,11 @@ CREATE TABLE "comments" (
   CONSTRAINT "posmatchid_fk" FOREIGN KEY ("posmatchid") REFERENCES "posmatchids" ("posmatchid") ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT "username_fk" FOREIGN KEY ("username") REFERENCES "users" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-create index "posmatchid_fk_idx" on "comments"("posmatchid");
-create index "parentid_idx" on "comments"("parentid");
-create index "username_fk_idx" on "comments"("username");
+create index if not exists "posmatchid_fk_idx" on "comments"("posmatchid");
+create index if not exists "parentid_idx" on "comments"("parentid");
+create index if not exists "username_fk_idx" on "comments"("username");
 
-CREATE TABLE "posmatchids" (
+CREATE TABLE if not exists "posmatchids"(
   "id" integer primary key,
   "posmatchid" char(27) NOT NULL,
   "decisiontype" char(1) DEFAULT NULL,
@@ -37,9 +37,9 @@ CREATE TABLE "posmatchids" (
   "submissions" int(11) DEFAULT NULL,
   UNIQUE ("posmatchid")
 );
-create index "posmatchids_new_gnuid_idx" on "posmatchids"("decisiontype","version","rating");
+create index if not exists "posmatchids_new_gnuid_idx" on "posmatchids"("decisiontype","version","rating");
 
-CREATE TABLE "postags" (
+CREATE TABLE if not exists "postags"(
   "id" integer primary key,
   "POSMATCHID" char(27) NOT NULL,
   "TAG" varchar(30) NOT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE "postags" (
   UNIQUE ("POSMATCHID","TAG"),
   CONSTRAINT "tagsfk" FOREIGN KEY ("TAG") REFERENCES "tags" ("TAG") ON DELETE CASCADE ON UPDATE CASCADE
 );
-create index "tagsfk_idx" on "postags"("TAG");
+create index if not exists "tagsfk_idx" on "postags"("TAG");
 
-CREATE TABLE "preferences" (
+CREATE TABLE if not exists "preferences"(
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "name" varchar(50) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE "preferences" (
   CONSTRAINT "usern_fk" FOREIGN KEY ("username") REFERENCES "users" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-CREATE TABLE "reports" (
+CREATE TABLE if not exists "reports"(
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "posmatchid" char(27) DEFAULT NULL,
@@ -67,16 +67,16 @@ CREATE TABLE "reports" (
   CONSTRAINT "rep_posmatchid_fk" FOREIGN KEY ("posmatchid") REFERENCES "posmatchids" ("posmatchid") ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT "rep_username_fk" FOREIGN KEY ("username") REFERENCES "users" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-create index "rep_posmatchid_fk_idx" on "reports"("posmatchid");
-create index "rep_username_fk_idx" on "reports"("username");
+create index if not exists "rep_posmatchid_fk_idx" on "reports"("posmatchid");
+create index if not exists "rep_username_fk_idx" on "reports"("username");
 
-CREATE TABLE "stats" (
+CREATE TABLE if not exists "stats"(
   "id" integer primary key,
   "numofpositions" int(11) DEFAULT NULL,
   "numofsubmissionslast24h" int(10) DEFAULT NULL
 );
 
-CREATE TABLE "tags" (
+CREATE TABLE if not exists "tags"(
   "id" integer primary key,
   "TAG" varchar(30) NOT NULL,
   "DONETAGGING" char(1) DEFAULT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE "tags" (
   UNIQUE ("TAG")
 );
 
-CREATE TABLE "users" (
+CREATE TABLE if not exists "users"(
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "rating" float DEFAULT '1500',
@@ -94,9 +94,9 @@ CREATE TABLE "users" (
   "lastsubmission" datetime DEFAULT NULL,
   UNIQUE ("username")
 );
-create index "usersrating_idx" on "users"("rating");
+create index if not exists "usersrating_idx" on "users"("rating");
 
-CREATE TABLE "usersposmatchids" (
+CREATE TABLE if not exists "usersposmatchids"(
   "id" integer primary key,
   "username" varchar(50) NOT NULL,
   "posmatchid" char(27) NOT NULL,
@@ -112,5 +112,5 @@ CREATE TABLE "usersposmatchids" (
   CONSTRAINT "usersposmatchids_ibfk_1" FOREIGN KEY ("username") REFERENCES "users" ("username"),
   CONSTRAINT "usersposmatchids_ibfk_2" FOREIGN KEY ("posmatchid") REFERENCES "posmatchids" ("posmatchid") ON DELETE CASCADE
 );
-create index "usersposmatchids_idx1" on "usersposmatchids"("eqdiff");
-create index "username" on "usersposmatchids"("username");
+create index if not exists "usersposmatchids_idx1" on "usersposmatchids"("eqdiff");
+create index if not exists "username" on "usersposmatchids"("username");
