@@ -28,7 +28,7 @@
         else:
             rank = webapp.get_user_rank()
             if rank is not None:
-                low_limit, high_limit = common.normalize_limits(rank, conf.LEADERBOARD_ROWS / 2, webapp.get_leaderboard(0, 1)['count'])
+                low_limit, high_limit = common.normalize_limits(rank, conf.LEADERBOARD_ROWS // 2, webapp.get_leaderboard(0, 1)['count'])
                 offset = low_limit - 1
             else:
                 offset = 0
