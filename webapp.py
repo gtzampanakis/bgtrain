@@ -460,9 +460,9 @@ class Application:
                 sql = '''
                     insert or ignore
                     into users
-                    (username)
+                    (username, createdat)
                     values
-                    (%s)
+                    (%s, current_timestamp)
                 '''
                 rs = conn.execute(sql, [username_to_use])
 
@@ -700,9 +700,9 @@ class Application:
                     sql = '''
                         insert or ignore
                         into users
-                        (username)
+                        (username, createdat)
                         values
-                        (%s)
+                        (%s, current_timestamp)
                     '''
                     rs = conn.execute(sql, [username_to_use])
 
@@ -937,9 +937,9 @@ class Application:
             else:
                 sql = '''
                 insert into users
-                (username, pwhash)
+                (username, pwhash, createdat)
                 values
-                (%s, %s)
+                (%s, %s, current_timestamp)
                 '''
                 conn.execute(sql, [username, gc.get_password_hash(password)])
                 if email != '':

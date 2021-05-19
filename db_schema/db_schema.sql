@@ -92,6 +92,7 @@ CREATE TABLE if not exists "users"(
   "pwhash" varchar(120) DEFAULT NULL,
   "email" varchar(100) DEFAULT NULL,
   "lastsubmission" text DEFAULT NULL,
+  "CREATEDAT" text NOT NULL,
   UNIQUE ("username")
 );
 create index if not exists "usersrating_idx" on "users"("rating");
