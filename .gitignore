@@ -56,4 +56,6 @@ docs/_build/
 # PyBuilder
 target/
 
+dump/
+matches/
 sessions/
