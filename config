@@ -1,5 +1,6 @@
 [global]
 server.socket_host: "0.0.0.0"
+server.socket_port: 8080
 
 [db]
 conn_string = 'sqlite3:///home/vagrant/dev/bgtrain/db/db.sqlite'
