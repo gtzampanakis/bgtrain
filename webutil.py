@@ -58,7 +58,7 @@ class CheckedDictInvalidValueException(Exception):
     pass
 
 
-class CheckedDict(collections.MutableMapping):
+class CheckedDict(collections.abc.MutableMapping):
     def __init__(self, validation, initializion = { }):
         self.dict = { }
         self.validation_mapping = validation
@@ -154,5 +154,3 @@ def unicode_to_html(text):
 def truncate_string(s, max_length):
     result = s if len(s) <= max_length else (s[:max_length - 3] + '...')
     return result
-
-
